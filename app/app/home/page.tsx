@@ -10,30 +10,32 @@ export default function HomePage() {
 
   return (
     <AppShell hideTopBar>
-      <div className="px-4 py-6 space-y-6">
-        {/* Header */}
-        <header className="space-y-1">
-          <p className="text-caption text-text-mid">Добро пожаловать</p>
+      <div className="px-4 pt-6 pb-6">
+        {/* Header - welcoming but focused */}
+        <header className="mb-6">
+          <p className="text-caption text-text-mid mb-1">Добро пожаловать</p>
           <h1 className="text-h2 text-text-high">Ваш путь к поездке</h1>
         </header>
 
-        {/* Next Action Banner - highest priority */}
-        {hasActiveCase && mockActiveCase.nextAction && (
-          <NextActionBanner action={mockActiveCase.nextAction} />
-        )}
+        <div className="space-y-5">
+          {/* Next Action Banner - highest priority, always first */}
+          {hasActiveCase && mockActiveCase.nextAction && (
+            <NextActionBanner action={mockActiveCase.nextAction} />
+          )}
 
-        {/* Active Case Card */}
-        {hasActiveCase && (
-          <ActiveCaseCard caseData={mockActiveCase} />
-        )}
+          {/* Active Case Card - primary visual focus */}
+          {hasActiveCase && (
+            <ActiveCaseCard caseData={mockActiveCase} />
+          )}
 
-        {/* Quick Stats */}
-        {hasActiveCase && (
-          <QuickStats stats={quickStats} />
-        )}
+          {/* Quick Stats - scannable progress */}
+          {hasActiveCase && (
+            <QuickStats stats={quickStats} />
+          )}
 
-        {/* Start New Case */}
-        <StartNewCase hasActiveCase={hasActiveCase} />
+          {/* Start New Case - secondary option */}
+          <StartNewCase hasActiveCase={hasActiveCase} />
+        </div>
       </div>
     </AppShell>
   )

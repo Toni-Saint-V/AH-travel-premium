@@ -7,34 +7,38 @@ import { JourneyAIStatus } from '@/components/journey/journey-ai-status'
 import { mockActiveCase, caseStatusLabels } from '@/lib/mock-data'
 
 export default function JourneyPage() {
+  const bestScenario = mockActiveCase.scenarios.find(s => s.path === 'best')
+  
   return (
     <AppShell title="Ваш путь">
-      <div className="px-4 py-6 space-y-6">
-        {/* Journey Header with destination and status */}
-        <JourneyHeader 
-          destination={mockActiveCase.destination}
-          destinationFlag={mockActiveCase.destinationFlag}
-          tripGoal={mockActiveCase.tripGoal}
-          status={mockActiveCase.status}
-          statusLabel={caseStatusLabels[mockActiveCase.status]}
-          travelDates={mockActiveCase.travelDates}
-        />
+      <div className="px-4 pt-4 pb-6">
+        <div className="space-y-6">
+          {/* Journey Header - destination, goal, status, dates */}
+          <JourneyHeader 
+            destination={mockActiveCase.destination}
+            destinationFlag={mockActiveCase.destinationFlag}
+            tripGoal={mockActiveCase.tripGoal}
+            status={mockActiveCase.status}
+            statusLabel={caseStatusLabels[mockActiveCase.status]}
+            travelDates={mockActiveCase.travelDates}
+          />
 
-        {/* AI Status Card */}
-        <JourneyAIStatus 
-          insight={mockActiveCase.aiInsight || ''}
-          scenarioTitle={mockActiveCase.scenarios.find(s => s.path === 'best')?.title || ''}
-          successRate={mockActiveCase.scenarios.find(s => s.path === 'best')?.successRate || 0}
-        />
+          {/* Next Action - highest priority, always visible */}
+          <JourneyNextAction action={mockActiveCase.nextAction} />
 
-        {/* Next Action */}
-        <JourneyNextAction action={mockActiveCase.nextAction} />
+          {/* AI Status Card - inline reasoning */}
+          <JourneyAIStatus 
+            insight={mockActiveCase.aiInsight || ''}
+            scenarioTitle={bestScenario?.title || ''}
+            successRate={bestScenario?.successRate || 0}
+          />
 
-        {/* Quick Links */}
-        <JourneyQuickLinks />
+          {/* Quick Links - secondary navigation */}
+          <JourneyQuickLinks />
 
-        {/* Timeline */}
-        <JourneyTimeline events={mockActiveCase.timeline} />
+          {/* Timeline - progress visualization */}
+          <JourneyTimeline events={mockActiveCase.timeline} />
+        </div>
       </div>
     </AppShell>
   )

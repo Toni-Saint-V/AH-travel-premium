@@ -6,48 +6,46 @@ import { cn } from '@/lib/utils'
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-4 py-16 overflow-hidden">
-      {/* Background gradient effects */}
+    <section className="relative min-h-[90vh] flex flex-col items-center justify-center px-4 py-20 overflow-hidden">
+      {/* Subtle background gradient - restrained, not loud */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-accent/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-accent-2/5 rounded-full blur-[80px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-accent/8 rounded-full blur-[120px]" />
       </div>
 
-      <div className="relative z-10 max-w-lg mx-auto text-center">
+      <div className="relative z-10 max-w-md mx-auto text-center">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-6 rounded-full bg-accent/10 border border-accent/20">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-8 rounded-full bg-accent/8 border border-accent/15">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
           <span className="text-caption text-accent font-medium">AI-платформа для путешествий</span>
         </div>
 
-        {/* Headline */}
-        <h1 className="text-display text-text-high mb-4 text-balance">
+        {/* Headline - strong, clear */}
+        <h1 className="text-display text-text-high mb-5 text-balance leading-tight">
           Узнайте свои шансы на визу за 2 минуты
         </h1>
 
-        {/* Subheadline */}
-        <p className="text-body text-text-mid mb-8 max-w-md mx-auto text-balance leading-relaxed">
-          Персональная оценка, понятные риски, пошаговый план сбора документов. 
-          От неопределённости к готовности к поездке.
+        {/* Subheadline - supporting, calm */}
+        <p className="text-body text-text-mid mb-10 max-w-sm mx-auto text-balance leading-relaxed">
+          Персональная оценка, понятные риски, пошаговый план сбора документов. От неопределённости к готовности.
         </p>
 
-        {/* CTA */}
+        {/* Primary CTA - single, clear */}
         <Link
-          href="/check"
+          href="/app/home"
           className={cn(
-            'inline-flex items-center justify-center gap-2 h-14 px-8',
-            'rounded-xl bg-accent text-white font-medium text-lg',
+            'inline-flex items-center justify-center gap-2 h-14 px-10',
+            'rounded-xl bg-accent text-white font-semibold text-base',
             'hover:bg-accent/90 active:scale-[0.98]',
             'transition-fast touch-target',
-            'shadow-[0_0_30px_rgba(108,99,255,0.3)]'
+            'shadow-[0_0_40px_rgba(108,99,255,0.25)]'
           )}
         >
           Проверить шансы
           <ArrowRight className="w-5 h-5" />
         </Link>
 
-        {/* Supporting points */}
-        <div className="flex items-center justify-center gap-6 mt-8">
+        {/* Supporting points - quiet */}
+        <div className="flex items-center justify-center gap-8 mt-10">
           <div className="flex items-center gap-1.5 text-caption text-text-low">
             <Clock className="w-3.5 h-3.5" />
             <span>2 минуты</span>
