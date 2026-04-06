@@ -51,26 +51,27 @@ export function CaseCommandCenter({ caseData }: CaseCommandCenterProps) {
 
       {/* CASE HERO - destination + progress */}
       <Link href="/app/journey" className="block group">
-        <div className="mb-6">
-          {/* Destination context */}
-          <div className="flex items-center gap-2 mb-4 text-text-mid">
-            <span className="text-xl" suppressHydrationWarning>{caseData.destinationFlag}</span>
-            <span className="text-body">{caseData.destination}</span>
-            <span className="text-text-low">·</span>
-            <span className="text-body text-text-low">{caseData.tripGoal}</span>
+        <div className="mb-8">
+          {/* Destination context - stacked for mobile */}
+          <div className="mb-5">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl" suppressHydrationWarning>{caseData.destinationFlag}</span>
+              <span className="text-h3 text-text-high">{caseData.destination}</span>
+            </div>
+            <p className="text-body text-text-mid">{caseData.tripGoal}</p>
           </div>
 
           {/* Progress - THE number */}
-          <div className="mb-4">
-            <p className="text-caption text-text-low uppercase tracking-widest mb-2">Прогресс заявки</p>
+          <div className="mb-5">
+            <p className="text-caption text-text-low uppercase tracking-widest mb-3">Прогресс заявки</p>
             <div className="flex items-baseline gap-2">
               <span className="text-[48px] font-semibold text-text-high leading-none tabular-nums">{progress}</span>
               <span className="text-h2 text-text-low">%</span>
             </div>
           </div>
 
-          {/* Progress bar - minimal */}
-          <div className="h-1 rounded-full bg-bg-2 overflow-hidden mb-2">
+          {/* Progress bar */}
+          <div className="h-1.5 rounded-full bg-bg-2 overflow-hidden mb-3">
             <div 
               className="h-full bg-accent rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
@@ -79,24 +80,23 @@ export function CaseCommandCenter({ caseData }: CaseCommandCenterProps) {
 
           {/* Status */}
           <div className="flex items-center justify-between">
-            <span className="text-caption text-accent">{caseStatusLabels[caseData.status]}</span>
-            <ChevronRight className="w-4 h-4 text-text-low group-hover:translate-x-0.5 transition-transform" />
+            <span className="text-label text-accent">{caseStatusLabels[caseData.status]}</span>
+            <ChevronRight className="w-5 h-5 text-text-low group-hover:translate-x-0.5 transition-transform" />
           </div>
         </div>
       </Link>
 
-      {/* QUICK STATS - minimal row */}
-      <div className="flex items-center gap-6 py-4 border-t border-b border-border-hairline">
-        <Link href="/app/documents" className="flex-1 hover:opacity-80 transition-opacity">
-          <p className="text-caption text-text-low mb-1">Документы</p>
-          <p className={cn('text-h3', stats.blockers > 0 ? 'text-warning' : stats.verified === stats.total ? 'text-success' : 'text-text-high')}>
+      {/* QUICK STATS - stacked cards for mobile clarity */}
+      <div className="grid grid-cols-2 gap-4 py-5 border-t border-b border-border-hairline">
+        <Link href="/app/documents" className="hover:opacity-80 transition-opacity">
+          <p className="text-caption text-text-low mb-2">Документы</p>
+          <p className={cn('text-h2', stats.blockers > 0 ? 'text-warning' : stats.verified === stats.total ? 'text-success' : 'text-text-high')}>
             {stats.verified}/{stats.total}
           </p>
         </Link>
-        <div className="w-px h-8 bg-border-hairline" />
-        <div className="flex-1">
-          <p className="text-caption text-text-low mb-1">До поездки</p>
-          <p className={cn('text-h3', daysUntilTrip < 30 ? 'text-warning' : 'text-text-high')}>
+        <div>
+          <p className="text-caption text-text-low mb-2">До поездки</p>
+          <p className={cn('text-h2', daysUntilTrip < 30 ? 'text-warning' : 'text-text-high')}>
             {daysUntilTrip} дн.
           </p>
         </div>
@@ -104,7 +104,7 @@ export function CaseCommandCenter({ caseData }: CaseCommandCenterProps) {
 
       {/* AI Summary - subtle */}
       {caseData.aiSummary && (
-        <div className="pl-4 border-l-2 border-accent/30">
+        <div className="pl-4 border-l-2 border-accent/30 py-1">
           <p className="text-body text-text-mid leading-relaxed">
             {caseData.aiSummary}
           </p>
@@ -115,13 +115,13 @@ export function CaseCommandCenter({ caseData }: CaseCommandCenterProps) {
       {blockers.length === 0 && (
         <Link 
           href={nextAction.ctaHref}
-          className="flex items-center justify-between py-3 -mx-2 px-2 rounded-lg hover:bg-bg-1 transition-fast"
+          className="flex items-center justify-between py-4 rounded-xl surface-1 px-4 hover:surface-2 transition-fast"
         >
-          <div>
-            <p className="text-body text-text-high">{nextAction.title}</p>
+          <div className="flex-1 min-w-0 mr-4">
+            <p className="text-label text-text-high mb-1">{nextAction.title}</p>
             <p className="text-caption text-text-mid">{nextAction.description}</p>
           </div>
-          <ChevronRight className="w-4 h-4 text-text-low" />
+          <ChevronRight className="w-5 h-5 text-text-low flex-shrink-0" />
         </Link>
       )}
     </div>

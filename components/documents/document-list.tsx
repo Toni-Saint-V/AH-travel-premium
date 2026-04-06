@@ -25,12 +25,12 @@ export function DocumentList({ documents }: DocumentListProps) {
   const complete = documents.filter(d => d.status === 'verified')
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Needs Action */}
       {needsAction.length > 0 && (
         <section>
           <p className="text-caption text-text-low uppercase tracking-widest mb-4">Требуют действий</p>
-          <div className="space-y-1">
+          <div className="space-y-3">
             {needsAction.map(doc => <DocumentRow key={doc.id} document={doc} />)}
           </div>
         </section>
@@ -40,7 +40,7 @@ export function DocumentList({ documents }: DocumentListProps) {
       {inProgress.length > 0 && (
         <section>
           <p className="text-caption text-text-low uppercase tracking-widest mb-4">На проверке</p>
-          <div className="space-y-1">
+          <div className="space-y-3">
             {inProgress.map(doc => <DocumentRow key={doc.id} document={doc} />)}
           </div>
         </section>
@@ -50,7 +50,7 @@ export function DocumentList({ documents }: DocumentListProps) {
       {complete.length > 0 && (
         <section>
           <p className="text-caption text-text-low/60 uppercase tracking-widest mb-4">Проверены</p>
-          <div className="space-y-1">
+          <div className="space-y-3">
             {complete.map(doc => <DocumentRow key={doc.id} document={doc} muted />)}
           </div>
         </section>
@@ -67,22 +67,23 @@ function DocumentRow({ document, muted = false }: { document: Document; muted?: 
     <Link
       href={`/app/documents/${document.id}`}
       className={cn(
-        'flex items-center gap-3 py-3 -mx-2 px-2 rounded-lg transition-fast',
-        'hover:bg-bg-1 active:bg-bg-2'
+        'flex items-center gap-4 p-4 rounded-xl transition-fast',
+        muted ? 'surface-1/50' : 'surface-1',
+        'hover:surface-2 active:bg-bg-2'
       )}
     >
       {/* Status indicator */}
       {isComplete ? (
-        <CheckCircle2 className={cn('w-5 h-5 flex-shrink-0', muted ? 'text-success/40' : 'text-success')} />
+        <CheckCircle2 className={cn('w-6 h-6 flex-shrink-0', muted ? 'text-success/40' : 'text-success')} />
       ) : (
-        <div className={cn('w-5 h-5 flex items-center justify-center flex-shrink-0')}>
-          <div className={cn('w-2 h-2 rounded-full', config.dotColor)} />
+        <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+          <div className={cn('w-2.5 h-2.5 rounded-full', config.dotColor)} />
         </div>
       )}
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className={cn('text-body truncate', muted ? 'text-text-mid' : 'text-text-high')}>
+        <p className={cn('text-label mb-0.5', muted ? 'text-text-mid' : 'text-text-high')}>
           {document.name}
         </p>
         {!isComplete && (
@@ -92,7 +93,7 @@ function DocumentRow({ document, muted = false }: { document: Document; muted?: 
         )}
       </div>
 
-      <ChevronRight className={cn('w-4 h-4 flex-shrink-0', muted ? 'text-text-low/30' : 'text-text-low')} />
+      <ChevronRight className={cn('w-5 h-5 flex-shrink-0', muted ? 'text-text-low/30' : 'text-text-low')} />
     </Link>
   )
 }

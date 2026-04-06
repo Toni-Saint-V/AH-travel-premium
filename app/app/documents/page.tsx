@@ -17,26 +17,26 @@ export default function DocumentsPage() {
       <div className="px-4 pt-6 pb-6">
         
         {/* HERO: Progress or Status - THE focal point */}
-        <section className="mb-8">
+        <section className="mb-10">
           {criticalBlockers.length > 0 ? (
             // BLOCKERS - dramatic, stops you
             <div className="mb-6">
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center gap-3 mb-3">
                 <AlertOctagon className="w-5 h-5 text-danger" />
                 <span className="text-caption text-danger uppercase tracking-widest">Блокирует подачу</span>
               </div>
-              <h1 className="text-[36px] font-semibold text-danger leading-none mb-4">
+              <h1 className="text-[36px] font-semibold text-danger leading-none mb-6">
                 {criticalBlockers.length} {criticalBlockers.length === 1 ? 'документ' : 'документа'}
               </h1>
-              <div className="space-y-1">
+              <div className="space-y-3">
                 {criticalBlockers.map((doc) => (
                   <Link
                     key={doc.id}
                     href={`/app/documents/${doc.id}`}
-                    className="flex items-center justify-between py-3 border-b border-border-hairline last:border-0 hover:bg-bg-1 -mx-2 px-2 rounded transition-fast"
+                    className="flex items-center justify-between p-4 rounded-xl surface-1 hover:surface-2 transition-fast"
                   >
-                    <span className="text-body text-text-high">{doc.name}</span>
-                    <ArrowRight className="w-4 h-4 text-danger" />
+                    <span className="text-label text-text-high">{doc.name}</span>
+                    <ArrowRight className="w-5 h-5 text-danger flex-shrink-0" />
                   </Link>
                 ))}
               </div>
@@ -44,8 +44,8 @@ export default function DocumentsPage() {
           ) : allReady ? (
             // ALL READY - success, calm
             <div className="py-6">
-              <div className="flex items-center gap-3 mb-2">
-                <CheckCircle2 className="w-5 h-5 text-success" />
+              <div className="flex items-center gap-3 mb-3">
+                <CheckCircle2 className="w-6 h-6 text-success" />
                 <span className="text-caption text-success uppercase tracking-widest">Готово к подаче</span>
               </div>
               <h1 className="text-[36px] font-semibold text-success leading-none">
@@ -55,19 +55,19 @@ export default function DocumentsPage() {
           ) : (
             // IN PROGRESS - the number dominates
             <div className="py-4">
-              <p className="text-caption text-text-low uppercase tracking-widest mb-2">Готовность документов</p>
-              <div className="flex items-baseline gap-3 mb-4">
-                <span className="text-[56px] font-semibold text-text-high leading-none tabular-nums">{percentage}</span>
+              <p className="text-caption text-text-low uppercase tracking-widest mb-3">Готовность документов</p>
+              <div className="flex items-baseline gap-3 mb-5">
+                <span className="text-[52px] font-semibold text-text-high leading-none tabular-nums">{percentage}</span>
                 <span className="text-h2 text-text-low">%</span>
               </div>
-              {/* Progress bar - minimal */}
-              <div className="h-1 rounded-full bg-bg-2 overflow-hidden mb-3">
+              {/* Progress bar */}
+              <div className="h-1.5 rounded-full bg-bg-2 overflow-hidden mb-4">
                 <div 
                   className="h-full bg-accent rounded-full transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
-              <p className="text-caption text-text-low">
+              <p className="text-body text-text-mid">
                 {stats.verified} из {stats.total} проверено
               </p>
             </div>
