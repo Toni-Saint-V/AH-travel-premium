@@ -2,18 +2,18 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowRight, ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react'
-import { AppShell } from '@/components/layout/app-shell'
+import { ArrowRight, CheckCircle2, Sparkles } from 'lucide-react'
+import { OnboardingShell } from '@/components/layout/onboarding-shell'
 import { SurfaceCard } from '@/components/ui/surface-card'
-import { ProgressBar } from '@/components/ui/progress-bar'
 import { cn } from '@/lib/utils'
 
 interface Question {
   id: string
   title: string
   subtitle?: string
-  type: 'single' | 'multi' | 'text'
-  options?: { value: string; label: string; description?: string }[]
+  aiHint?: string
+  type: 'single'
+  options: { value: string; label: string; description?: string }[]
 }
 
 const questions: Question[] = [
@@ -23,12 +23,12 @@ const questions: Question[] = [
     subtitle: 'Выберите основную страну назначения',
     type: 'single',
     options: [
-      { value: 'spain', label: '🇪🇸 Испания', description: 'Шенгенская виза' },
-      { value: 'france', label: '🇫🇷 Франция', description: 'Шенгенская виза' },
-      { value: 'italy', label: '🇮🇹 Италия', description: 'Шенгенская виза' },
-      { value: 'germany', label: '🇩🇪 Германия', description: 'Шенгенская виза' },
-      { value: 'uk', label: '🇬🇧 Великобритания', description: 'UK Visa' },
-      { value: 'usa', label: '🇺🇸 США', description: 'B1/B2 Visa' },
+      { value: 'spain', label: 'Испания', description: 'Шенгенская виза' },
+      { value: 'france', label: 'Франция', description: 'Шенгенская виза' },
+      { value: 'italy', label: 'Италия', description: 'Шенгенская виза' },
+      { value: 'germany', label: 'Германия', description: 'Шенгенская виза' },
+      { value: 'uk', label: 'Великобритания', description: 'UK Visa' },
+      { value: 'usa', label: 'США', description: 'B1/B2 Visa' },
     ],
   },
   {
@@ -47,6 +47,7 @@ const questions: Question[] = [
     id: 'travel_history',
     title: 'Были ли у вас шенгенские визы?',
     subtitle: 'История поездок влияет на оценку',
+    aiHint: 'История успешных поездок повышает шансы на одобрение. Даже одна-две визы лучше, чем первая заявка.',
     type: 'single',
     options: [
       { value: 'multiple', label: 'Да, несколько', description: '3 и более виз за 5 лет' },
@@ -59,6 +60,7 @@ const questions: Question[] = [
     id: 'employment',
     title: 'Ваш текущий статус занятости?',
     subtitle: 'Финансовая стабильность — важный фактор',
+    aiHint: 'Официальное трудоустройство или свой бизнес — сильный аргумент. Для студентов и пенсионеров нужны дополнительные документы.',
     type: 'single',
     options: [
       { value: 'employed', label: 'Работаю по найму', description: 'Официальное трудоустройство' },
@@ -97,7 +99,6 @@ export default function QuestionnairePage() {
 
   const handleNext = () => {
     if (isLastStep) {
-      // Navigate to result
       router.push('/app/result')
     } else {
       setCurrentStep(prev => prev + 1)
@@ -111,25 +112,19 @@ export default function QuestionnairePage() {
   }
 
   return (
-    <AppShell 
+    <OnboardingShell
       title="Проверка шансов"
-      showBack
-      backHref="/app/home"
+      progress={progress}
+      showBack={currentStep > 0}
+      onBack={handleBack}
+      closeHref="/"
     >
-      <div className="px-4 pt-4 pb-6">
-        {/* Progress */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-caption text-text-mid">
-              Шаг {currentStep + 1} из {questions.length}
-            </span>
-            <span className="text-caption text-accent">{Math.round(progress)}%</span>
-          </div>
-          <ProgressBar value={progress} />
-        </div>
-
+      <div className="flex-1 flex flex-col px-4 pt-6 pb-6">
         {/* Question */}
-        <div className="mb-8">
+        <div className="mb-6">
+          <p className="text-caption text-text-mid mb-1">
+            Вопрос {currentStep + 1} из {questions.length}
+          </p>
           <h1 className="text-h2 text-text-high mb-1">{currentQuestion.title}</h1>
           {currentQuestion.subtitle && (
             <p className="text-body text-text-mid">{currentQuestion.subtitle}</p>
@@ -137,8 +132,8 @@ export default function QuestionnairePage() {
         </div>
 
         {/* Options */}
-        <div className="space-y-2 mb-8">
-          {currentQuestion.options?.map((option) => {
+        <div className="space-y-2 flex-1">
+          {currentQuestion.options.map((option) => {
             const isSelected = answers[currentQuestion.id] === option.value
             return (
               <button
@@ -147,8 +142,8 @@ export default function QuestionnairePage() {
                 className={cn(
                   'w-full flex items-center gap-4 p-4 rounded-xl border text-left transition-fast',
                   isSelected
-                    ? 'surface-2 border-accent/40 glow-accent'
-                    : 'surface-1 border-border-hairline hover:surface-2'
+                    ? 'surface-2 border-accent/40'
+                    : 'surface-1 border-border-hairline hover:surface-2 hover:border-border-strong'
                 )}
               >
                 <div className={cn(
@@ -170,40 +165,25 @@ export default function QuestionnairePage() {
           })}
         </div>
 
-        {/* AI Hint */}
-        {currentStep === 2 && (
-          <SurfaceCard className="mb-8 border-l-2 border-l-accent">
+        {/* AI Hint - contextual guidance */}
+        {currentQuestion.aiHint && (
+          <SurfaceCard className="mt-6 border-l-2 border-l-accent">
             <div className="flex items-start gap-3">
-              <Sparkles className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-              <p className="text-caption text-text-mid">
-                История успешных поездок значительно повышает шансы на одобрение. 
-                Даже если виз было немного, это лучше, чем первая заявка.
+              <Sparkles className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+              <p className="text-caption text-text-mid leading-relaxed">
+                {currentQuestion.aiHint}
               </p>
             </div>
           </SurfaceCard>
         )}
 
-        {/* Navigation */}
-        <div className="flex items-center gap-3">
-          {currentStep > 0 && (
-            <button
-              onClick={handleBack}
-              className={cn(
-                'flex items-center justify-center w-12 h-12',
-                'rounded-xl surface-2 border border-border-strong',
-                'hover:surface-1 active:scale-[0.98]',
-                'transition-fast touch-target'
-              )}
-            >
-              <ArrowLeft className="w-5 h-5 text-text-mid" />
-            </button>
-          )}
-          
+        {/* CTA */}
+        <div className="mt-6">
           <button
             onClick={handleNext}
             disabled={!canProceed}
             className={cn(
-              'flex-1 flex items-center justify-center gap-2 h-12',
+              'flex items-center justify-center gap-2 w-full h-12',
               'rounded-xl font-medium transition-fast touch-target',
               canProceed
                 ? 'bg-accent text-white hover:bg-accent/90 active:scale-[0.98]'
@@ -215,6 +195,6 @@ export default function QuestionnairePage() {
           </button>
         </div>
       </div>
-    </AppShell>
+    </OnboardingShell>
   )
 }

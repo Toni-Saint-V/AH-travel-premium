@@ -1,5 +1,5 @@
 import { AppShell } from '@/components/layout/app-shell'
-import { User, FileText, CreditCard, Bell, Settings, ChevronRight, LogOut } from 'lucide-react'
+import { User, FileText, CreditCard, Bell, Settings, ChevronRight, LogOut, HelpCircle, MessageCircle, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -17,6 +17,14 @@ const menuItems = [
     items: [
       { icon: Bell, label: 'Уведомления', href: '#', description: 'Push, email, SMS', disabled: true },
       { icon: Settings, label: 'Настройки', href: '#', description: 'Язык, тема, приватность', disabled: true },
+    ]
+  },
+  {
+    section: 'Помощь',
+    items: [
+      { icon: HelpCircle, label: 'Частые вопросы', href: '#', description: 'Ответы на популярные вопросы', disabled: true },
+      { icon: MessageCircle, label: 'Поддержка', href: '#', description: 'Чат с оператором', disabled: true },
+      { icon: Shield, label: 'Политика конфиденциальности', href: '#', description: 'Как мы защищаем ваши данные', disabled: true },
     ]
   }
 ]

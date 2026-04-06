@@ -59,7 +59,7 @@ export function JourneyHeader({
     <div className="surface-1 rounded-xl p-4 border border-border-hairline">
       {/* Main info */}
       <div className="flex items-start gap-3 mb-4">
-        <span className="text-3xl">{destinationFlag}</span>
+        <span className="text-3xl" suppressHydrationWarning>{destinationFlag}</span>
         <div className="flex-1">
           <h1 className="text-h2 text-text-high">{destination}</h1>
           <p className="text-body text-text-mid">{tripGoal}</p>
