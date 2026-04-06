@@ -2,18 +2,14 @@
 
 import Link from 'next/link'
 import { 
-  FileText, 
   Upload, 
   CheckCircle2, 
   Clock, 
   AlertTriangle, 
-  XCircle,
   ChevronRight,
   Calendar
 } from 'lucide-react'
 import { Document, DocumentStatus, documentStatusLabels } from '@/lib/mock-data'
-import { StatusBadge } from '@/components/ui/status-badge'
-import { SectionHeader } from '@/components/ui/section-header'
 import { cn } from '@/lib/utils'
 
 interface DocumentListProps {
@@ -22,19 +18,20 @@ interface DocumentListProps {
 
 const statusConfig: Record<DocumentStatus, {
   icon: React.ComponentType<{ className?: string }>
-  variant: 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info'
+  color: string
+  bg: string
   sortOrder: number
 }> = {
-  missing: { icon: Upload, variant: 'danger', sortOrder: 0 },
-  needs_fix: { icon: AlertTriangle, variant: 'warning', sortOrder: 1 },
-  uploaded: { icon: Clock, variant: 'info', sortOrder: 2 },
-  reviewing: { icon: Clock, variant: 'info', sortOrder: 3 },
-  verified: { icon: CheckCircle2, variant: 'success', sortOrder: 4 },
-  expired: { icon: Calendar, variant: 'danger', sortOrder: 5 },
+  missing: { icon: Upload, color: 'text-danger', bg: 'bg-danger/10', sortOrder: 0 },
+  needs_fix: { icon: AlertTriangle, color: 'text-warning', bg: 'bg-warning/10', sortOrder: 1 },
+  expired: { icon: Calendar, color: 'text-danger', bg: 'bg-danger/10', sortOrder: 2 },
+  uploaded: { icon: Clock, color: 'text-accent-2', bg: 'bg-accent-2/10', sortOrder: 3 },
+  reviewing: { icon: Clock, color: 'text-accent-2', bg: 'bg-accent-2/10', sortOrder: 4 },
+  verified: { icon: CheckCircle2, color: 'text-success', bg: 'bg-success/10', sortOrder: 5 },
 }
 
 export function DocumentList({ documents }: DocumentListProps) {
-  // Group and sort: needs action first, then in progress, then complete
+  // Group: needs action, in progress, complete
   const needsAction = documents
     .filter(d => d.status === 'missing' || d.status === 'needs_fix' || d.status === 'expired')
     .sort((a, b) => statusConfig[a.status].sortOrder - statusConfig[b.status].sortOrder)
@@ -47,17 +44,15 @@ export function DocumentList({ documents }: DocumentListProps) {
 
   return (
     <div className="space-y-6">
-      {/* Needs Action */}
+      {/* Needs Action - highest priority section */}
       {needsAction.length > 0 && (
         <section>
-          <SectionHeader 
-            title="Требуют действий" 
-            subtitle={`${needsAction.length} ${needsAction.length === 1 ? 'документ' : 'документа'}`}
-            className="mb-3"
-          />
+          <h2 className="text-label text-text-mid uppercase tracking-wider mb-3">
+            Требуют действий ({needsAction.length})
+          </h2>
           <div className="space-y-2">
             {needsAction.map(doc => (
-              <DocumentCard key={doc.id} document={doc} />
+              <DocumentRow key={doc.id} document={doc} priority="high" />
             ))}
           </div>
         </section>
@@ -66,30 +61,26 @@ export function DocumentList({ documents }: DocumentListProps) {
       {/* In Progress */}
       {inProgress.length > 0 && (
         <section>
-          <SectionHeader 
-            title="На проверке" 
-            subtitle={`${inProgress.length} ${inProgress.length === 1 ? 'документ' : 'документа'}`}
-            className="mb-3"
-          />
+          <h2 className="text-label text-text-mid uppercase tracking-wider mb-3">
+            На проверке ({inProgress.length})
+          </h2>
           <div className="space-y-2">
             {inProgress.map(doc => (
-              <DocumentCard key={doc.id} document={doc} />
+              <DocumentRow key={doc.id} document={doc} priority="medium" />
             ))}
           </div>
         </section>
       )}
 
-      {/* Complete */}
+      {/* Complete - quietest */}
       {complete.length > 0 && (
         <section>
-          <SectionHeader 
-            title="Проверены" 
-            subtitle={`${complete.length} ${complete.length === 1 ? 'документ' : 'документа'}`}
-            className="mb-3"
-          />
+          <h2 className="text-label text-text-low uppercase tracking-wider mb-3">
+            Проверены ({complete.length})
+          </h2>
           <div className="space-y-2">
             {complete.map(doc => (
-              <DocumentCard key={doc.id} document={doc} />
+              <DocumentRow key={doc.id} document={doc} priority="low" />
             ))}
           </div>
         </section>
@@ -98,7 +89,13 @@ export function DocumentList({ documents }: DocumentListProps) {
   )
 }
 
-function DocumentCard({ document }: { document: Document }) {
+function DocumentRow({ 
+  document, 
+  priority 
+}: { 
+  document: Document
+  priority: 'high' | 'medium' | 'low'
+}) {
   const config = statusConfig[document.status]
   const Icon = config.icon
   const hasIssues = document.issues && document.issues.length > 0
@@ -108,60 +105,56 @@ function DocumentCard({ document }: { document: Document }) {
       href={`/app/documents/${document.id}`}
       className={cn(
         'flex items-center gap-3 p-4 rounded-xl border transition-fast',
-        'surface-1 border-border-hairline hover:surface-2',
-        'active:scale-[0.99]',
-        (document.status === 'missing' || document.status === 'needs_fix') && 'border-l-2 border-l-danger'
+        'hover:surface-2 active:scale-[0.995] active:translate-y-px',
+        priority === 'high' && 'surface-1 border-border-hairline border-l-2 border-l-danger',
+        priority === 'medium' && 'surface-1 border-border-hairline',
+        priority === 'low' && 'bg-bg-1/50 border-border-hairline/50'
       )}
     >
       {/* Icon */}
       <div className={cn(
         'flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0',
-        document.status === 'verified' ? 'bg-success/10' :
-        document.status === 'missing' || document.status === 'needs_fix' || document.status === 'expired' ? 'bg-danger/10' :
-        'bg-accent-2/10'
+        config.bg
       )}>
-        <Icon className={cn(
-          'w-5 h-5',
-          document.status === 'verified' ? 'text-success' :
-          document.status === 'missing' || document.status === 'needs_fix' || document.status === 'expired' ? 'text-danger' :
-          'text-accent-2'
-        )} />
+        <Icon className={cn('w-5 h-5', config.color)} />
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
-          <h3 className="text-label text-text-high truncate">{document.name}</h3>
-          {document.isReusable && (
-            <span className="text-caption text-accent-2 flex-shrink-0">Многоразовый</span>
-          )}
+          <h3 className={cn(
+            'text-label truncate',
+            priority === 'low' ? 'text-text-mid' : 'text-text-high'
+          )}>{document.name}</h3>
         </div>
         
         <div className="flex items-center gap-2">
-          <StatusBadge variant={config.variant} dot>
+          <span className={cn('text-caption', config.color)}>
             {documentStatusLabels[document.status]}
-          </StatusBadge>
+          </span>
           
           {document.expiryDate && document.status === 'verified' && (
             <span className="text-caption text-text-low">
-              до {new Date(document.expiryDate).toLocaleDateString('ru-RU', { 
+              · до {new Date(document.expiryDate).toLocaleDateString('ru-RU', { 
                 day: 'numeric', 
-                month: 'short',
-                year: 'numeric'
+                month: 'short'
               })}
             </span>
           )}
         </div>
 
-        {/* Issues preview */}
-        {hasIssues && (
+        {/* Issue preview - only for high priority */}
+        {hasIssues && priority === 'high' && (
           <p className="text-caption text-danger mt-1 line-clamp-1">
             {document.issues![0]}
           </p>
         )}
       </div>
 
-      <ChevronRight className="w-5 h-5 text-text-low flex-shrink-0" />
+      <ChevronRight className={cn(
+        'w-5 h-5 flex-shrink-0',
+        priority === 'low' ? 'text-text-low/50' : 'text-text-low'
+      )} />
     </Link>
   )
 }
