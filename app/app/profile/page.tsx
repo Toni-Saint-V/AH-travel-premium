@@ -64,7 +64,7 @@ export default function ProfilePage() {
 
                   return (
                     <Link
-                      key={item.href}
+                      key={item.label}
                       href={item.href}
                       className="flex items-center gap-4 p-4 hover:surface-2 transition-fast"
                     >

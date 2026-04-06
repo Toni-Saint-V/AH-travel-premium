@@ -18,7 +18,7 @@ export function DecisionPreview() {
           {/* Header */}
           <div className="p-4 border-b border-border-hairline">
             <div className="flex items-center gap-3 mb-3">
-              <span className="text-3xl">🇪🇸</span>
+              <span className="text-3xl" suppressHydrationWarning>🇪🇸</span>
               <div>
                 <h3 className="text-h3 text-text-high">Испания</h3>
                 <p className="text-caption text-text-mid">Туристическая виза</p>

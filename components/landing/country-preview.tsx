@@ -30,7 +30,7 @@ export function CountryPreview() {
                 'surface-1 border border-border-hairline'
               )}
             >
-              <span className="text-3xl mb-3 block">{country.flag}</span>
+              <span className="text-3xl mb-3 block" suppressHydrationWarning>{country.flag}</span>
               <h3 className="text-label text-text-high mb-0.5">{country.name}</h3>
               <p className="text-caption text-text-low">{country.type}</p>
               <p className="text-caption text-accent-2 mt-2">{country.avgTime}</p>
