@@ -31,7 +31,7 @@ export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   return (
-    <section className="py-16 px-4 surface-1">
+    <section id="faq" className="py-16 px-4 surface-1 scroll-mt-16">
       <div className="max-w-lg mx-auto">
         <h2 className="text-h2 text-text-high text-center mb-8">
           Частые вопросы

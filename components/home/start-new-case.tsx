@@ -18,7 +18,7 @@ export function StartNewCase({ hasActiveCase }: StartNewCaseProps) {
           subtitle="Начните оформление другой поездки"
         />
         <Link
-          href="/check"
+          href="/app/questionnaire"
           className={cn(
             'flex items-center justify-center gap-2 w-full h-12',
             'rounded-xl border border-dashed border-border-strong',
@@ -47,7 +47,7 @@ export function StartNewCase({ hasActiveCase }: StartNewCaseProps) {
       </p>
       
       <Link
-        href="/check"
+        href="/app/questionnaire"
         className={cn(
           'flex items-center justify-center gap-2 w-full max-w-[280px] h-12',
           'rounded-xl bg-accent text-white font-medium',

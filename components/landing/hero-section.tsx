@@ -31,7 +31,7 @@ export function HeroSection() {
 
         {/* Primary CTA - single, clear */}
         <Link
-          href="/app/home"
+          href="/app/questionnaire"
           className={cn(
             'inline-flex items-center justify-center gap-2 h-14 px-10',
             'rounded-xl bg-accent text-white font-semibold text-base',

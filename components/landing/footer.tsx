@@ -2,18 +2,18 @@ import Link from 'next/link'
 
 const links = {
   product: [
-    { label: 'Визы', href: '/visas' },
-    { label: 'Страхование', href: '/insurance' },
-    { label: 'Туры', href: '/tours' },
+    { label: 'Проверка шансов', href: '/app/questionnaire' },
+    { label: 'Документы', href: '/app/documents' },
+    { label: 'Личный кабинет', href: '/app/home' },
   ],
   company: [
-    { label: 'О нас', href: '/about' },
-    { label: 'FAQ', href: '/faq' },
-    { label: 'Контакты', href: '/contact' },
+    { label: 'Как это работает', href: '/#how-it-works' },
+    { label: 'Цены', href: '/#pricing' },
+    { label: 'Вопросы и ответы', href: '/#faq' },
   ],
   legal: [
-    { label: 'Политика конфиденциальности', href: '/privacy' },
-    { label: 'Условия использования', href: '/terms' },
+    { label: 'Политика конфиденциальности', href: '#' },
+    { label: 'Условия использования', href: '#' },
   ],
 }
 

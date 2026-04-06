@@ -1,9 +1,11 @@
+import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 import { AppShell } from '@/components/layout/app-shell'
 import { DocumentProgress } from '@/components/documents/document-progress'
 import { DocumentList } from '@/components/documents/document-list'
 import { DocumentsAIHint } from '@/components/documents/documents-ai-hint'
-import { SectionHeader } from '@/components/ui/section-header'
 import { mockActiveCase } from '@/lib/mock-data'
+import { cn } from '@/lib/utils'
 
 export default function DocumentsPage() {
   const documents = mockActiveCase.documents
@@ -11,6 +13,7 @@ export default function DocumentsPage() {
   const needsActionCount = documents.filter(
     d => d.status === 'missing' || d.status === 'needs_fix'
   ).length
+  const allReady = verifiedCount === documents.length
 
   return (
     <AppShell title="Документы">
@@ -42,6 +45,24 @@ export default function DocumentsPage() {
           <DocumentList documents={documents} />
         </div>
       </div>
+
+      {/* Sticky CTA when all ready */}
+      {allReady && (
+        <div className="sticky bottom-[calc(56px+max(16px,var(--safe-bottom,0px)))] left-0 right-0 px-4 py-4 surface-0 border-t border-border-hairline">
+          <Link
+            href="/app/checkout"
+            className={cn(
+              'flex items-center justify-center gap-2 w-full h-12',
+              'rounded-xl bg-success text-white font-medium',
+              'hover:bg-success/90 active:scale-[0.98]',
+              'transition-fast touch-target'
+            )}
+          >
+            Все документы готовы — перейти к оплате
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+        </div>
+      )}
     </AppShell>
   )
 }

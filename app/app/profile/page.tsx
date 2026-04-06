@@ -7,16 +7,16 @@ const menuItems = [
   {
     section: 'Аккаунт',
     items: [
-      { icon: User, label: 'Личные данные', href: '/app/profile/personal', description: 'Имя, контакты, паспорт' },
-      { icon: FileText, label: 'Мои документы', href: '/app/documents', description: 'Все загруженные файлы' },
-      { icon: CreditCard, label: 'История платежей', href: '/app/profile/payments', description: 'Чеки и квитанции' },
+      { icon: User, label: 'Личные данные', href: '#', description: 'Имя, контакты, паспорт', disabled: true },
+      { icon: FileText, label: 'Мои документы', href: '/app/documents', description: 'Все загруженные файлы', disabled: false },
+      { icon: CreditCard, label: 'История платежей', href: '#', description: 'Чеки и квитанции', disabled: true },
     ]
   },
   {
     section: 'Настройки',
     items: [
-      { icon: Bell, label: 'Уведомления', href: '/app/profile/notifications', description: 'Push, email, SMS' },
-      { icon: Settings, label: 'Настройки', href: '/app/profile/settings', description: 'Язык, тема, приватность' },
+      { icon: Bell, label: 'Уведомления', href: '#', description: 'Push, email, SMS', disabled: true },
+      { icon: Settings, label: 'Настройки', href: '#', description: 'Язык, тема, приватность', disabled: true },
     ]
   }
 ]
@@ -44,9 +44,27 @@ export default function ProfilePage() {
               <div className="surface-1 rounded-xl border border-border-hairline overflow-hidden divide-y divide-border-hairline">
                 {section.items.map((item) => {
                   const Icon = item.icon
+                  
+                  if (item.disabled) {
+                    return (
+                      <div
+                        key={item.label}
+                        className="flex items-center gap-4 p-4 opacity-50 cursor-not-allowed"
+                      >
+                        <div className="w-10 h-10 rounded-lg bg-bg-2 flex items-center justify-center flex-shrink-0">
+                          <Icon className="w-5 h-5 text-text-mid" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-label text-text-high">{item.label}</div>
+                          <div className="text-caption text-text-low">Скоро</div>
+                        </div>
+                      </div>
+                    )
+                  }
+
                   return (
                     <Link
-                      key={item.href}
+                      key={item.label}
                       href={item.href}
                       className="flex items-center gap-4 p-4 hover:surface-2 transition-fast"
                     >

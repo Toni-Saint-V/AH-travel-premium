@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 
 export function PricingTransparency() {
   return (
-    <section className="py-16 px-4 surface-1">
+    <section id="pricing" className="py-16 px-4 surface-1 scroll-mt-16">
       <div className="max-w-lg mx-auto">
         <h2 className="text-h2 text-text-high text-center mb-2">
           Прозрачное ценообразование

@@ -1,5 +1,6 @@
 import { HeroSection } from '@/components/landing/hero-section'
 import { TrustStrip } from '@/components/landing/trust-strip'
+import { DecisionPreview } from '@/components/landing/decision-preview'
 import { HowItWorks } from '@/components/landing/how-it-works'
 import { ScenarioPreview } from '@/components/landing/scenario-preview'
 import { DocumentWalletPreview } from '@/components/landing/document-wallet-preview'
@@ -13,6 +14,7 @@ export default function HomePage() {
     <div className="min-h-screen surface-0">
       <HeroSection />
       <TrustStrip />
+      <DecisionPreview />
       <HowItWorks />
       <ScenarioPreview />
       <DocumentWalletPreview />

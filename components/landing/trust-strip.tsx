@@ -1,9 +1,9 @@
 import { Users, CheckCircle, Clock, Shield } from 'lucide-react'
 
 const stats = [
-  { icon: Users, value: '12 000+', label: 'заявок обработано' },
-  { icon: CheckCircle, value: '94%', label: 'одобрено' },
-  { icon: Clock, value: '< 2 мин', label: 'на оценку' },
+  { icon: Shield, value: 'AI-анализ', label: '50+ факторов оценки' },
+  { icon: CheckCircle, value: 'Честные', label: 'риски и шансы' },
+  { icon: Clock, value: '< 2 мин', label: 'на проверку' },
 ]
 
 export function TrustStrip() {
