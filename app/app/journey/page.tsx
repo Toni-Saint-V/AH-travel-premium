@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ChevronRight, FileText, CreditCard, Sparkles, Calendar, Check, Clock } from 'lucide-react'
+import { ChevronRight, Calendar } from 'lucide-react'
 import { AppShell } from '@/components/layout/app-shell'
 import { JourneyTimeline } from '@/components/journey/journey-timeline'
 import { 
@@ -19,140 +19,104 @@ export default function JourneyPage() {
   
   return (
     <AppShell title="Статус заявки" showBack backHref="/app/home">
-      <div className="px-4 pt-4 pb-6">
+      <div className="px-4 pt-6 pb-6">
         
-        {/* HERO: Destination + Status - dominant */}
-        <section className="mb-8">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <span className="text-5xl" suppressHydrationWarning>{mockActiveCase.destinationFlag}</span>
-              <div>
-                <h1 className="text-display text-text-high">{mockActiveCase.destination}</h1>
-                <p className="text-body text-text-mid">{mockActiveCase.tripGoal}</p>
-              </div>
-            </div>
+        {/* HERO: Destination - dramatic, progress-focused */}
+        <section className="mb-10">
+          {/* Flag + destination - quiet context */}
+          <div className="flex items-center gap-2 mb-6 text-text-mid">
+            <span className="text-xl" suppressHydrationWarning>{mockActiveCase.destinationFlag}</span>
+            <span className="text-body">{mockActiveCase.destination}</span>
+            <span className="text-text-low">·</span>
+            <span className="text-body text-text-low">{mockActiveCase.tripGoal}</span>
           </div>
 
-          {/* Status + Days */}
-          <div className="flex items-center gap-4">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent/10">
-              <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-label text-accent">
-                {caseStatusLabels[mockActiveCase.status]}
-              </span>
-            </div>
-            <div className={cn(
-              'flex items-center gap-1.5 text-label',
-              daysUntilTrip < 30 ? 'text-warning' : 'text-text-mid'
-            )}>
-              <Calendar className="w-4 h-4" />
-              <span>{daysUntilTrip} дней до поездки</span>
-            </div>
+          {/* Status - THE focal point */}
+          <div className="mb-6">
+            <p className="text-caption text-text-low uppercase tracking-widest mb-2">Статус заявки</p>
+            <h1 className="text-[32px] font-semibold text-text-high leading-tight">
+              {caseStatusLabels[mockActiveCase.status]}
+            </h1>
+          </div>
+
+          {/* Days countdown */}
+          <div className={cn(
+            'inline-flex items-center gap-2 px-3 py-2 rounded-lg',
+            daysUntilTrip < 30 ? 'bg-warning/10' : 'bg-bg-1'
+          )}>
+            <Calendar className={cn('w-4 h-4', daysUntilTrip < 30 ? 'text-warning' : 'text-text-low')} />
+            <span className={cn('text-label', daysUntilTrip < 30 ? 'text-warning' : 'text-text-mid')}>
+              {daysUntilTrip} дней до поездки
+            </span>
           </div>
         </section>
 
-        {/* AI Summary - if present, distinct */}
+        {/* AI Summary - subtle, inline */}
         {mockActiveCase.aiSummary && (
-          <section className="mb-6 p-4 rounded-xl bg-accent/5 border border-accent/10">
-            <div className="flex items-start gap-3">
-              <Sparkles className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-              <p className="text-body text-text-mid">
-                {mockActiveCase.aiSummary}
-              </p>
-            </div>
+          <section className="mb-8 pl-4 border-l-2 border-accent/30">
+            <p className="text-body text-text-mid leading-relaxed">
+              {mockActiveCase.aiSummary}
+            </p>
           </section>
         )}
 
-        {/* Quick Actions - simplified, clear hierarchy */}
+        {/* Quick Actions - minimal list style */}
         <section className="mb-8">
-          <h2 className="text-label text-text-mid uppercase tracking-wider mb-3">Действия</h2>
-          <div className="space-y-2">
-            {/* Documents - primary if blockers */}
-            <Link href="/app/documents" className="block">
-              <div className={cn(
-                'flex items-center justify-between p-4 rounded-xl border transition-fast hover:surface-2',
-                stats.blockers > 0 
-                  ? 'surface-1 border-warning/30 bg-warning/5'
-                  : allDocsReady
-                  ? 'surface-1 border-success/30 bg-success/5'
-                  : 'surface-1 border-border-hairline'
-              )}>
-                <div className="flex items-center gap-3">
-                  <div className={cn(
-                    'w-10 h-10 rounded-xl flex items-center justify-center',
-                    stats.blockers > 0 ? 'bg-warning/10' : allDocsReady ? 'bg-success/10' : 'bg-accent/10'
-                  )}>
-                    <FileText className={cn(
-                      'w-5 h-5',
-                      stats.blockers > 0 ? 'text-warning' : allDocsReady ? 'text-success' : 'text-accent'
-                    )} />
-                  </div>
-                  <div>
-                    <p className="text-label text-text-high">Документы</p>
-                    <p className={cn(
-                      'text-caption',
-                      stats.blockers > 0 ? 'text-warning' : allDocsReady ? 'text-success' : 'text-text-mid'
-                    )}>
-                      {stats.blockers > 0 
-                        ? `${stats.blockers} требуют внимания`
-                        : allDocsReady 
-                        ? 'Все готово'
-                        : `${stats.verified}/${stats.total} проверено`
-                      }
-                    </p>
-                  </div>
-                </div>
-                <ChevronRight className="w-5 h-5 text-text-low" />
+          <p className="text-caption text-text-low uppercase tracking-widest mb-4">Действия</p>
+          <div className="space-y-1">
+            {/* Documents */}
+            <Link 
+              href="/app/documents" 
+              className="flex items-center justify-between py-3 -mx-2 px-2 rounded-lg hover:bg-bg-1 transition-fast"
+            >
+              <div className="flex items-center gap-3">
+                <div className={cn('w-2 h-2 rounded-full', stats.blockers > 0 ? 'bg-warning' : allDocsReady ? 'bg-success' : 'bg-text-low')} />
+                <span className="text-body text-text-high">Документы</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className={cn('text-caption', stats.blockers > 0 ? 'text-warning' : allDocsReady ? 'text-success' : 'text-text-mid')}>
+                  {stats.blockers > 0 ? `${stats.blockers} требуют внимания` : allDocsReady ? 'Готово' : `${stats.verified}/${stats.total}`}
+                </span>
+                <ChevronRight className="w-4 h-4 text-text-low" />
               </div>
             </Link>
 
             {/* Scenario */}
-            <Link href="/app/result" className="block">
-              <div className="flex items-center justify-between p-4 rounded-xl surface-1 border border-border-hairline hover:surface-2 transition-fast">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-accent" />
-                  </div>
-                  <div>
-                    <p className="text-label text-text-high">Оценка</p>
-                    <p className="text-caption text-text-mid">
-                      {selectedScenario 
-                        ? confidenceLevelLabels[selectedScenario.confidence]
-                        : '—'}
-                    </p>
-                  </div>
-                </div>
-                <ChevronRight className="w-5 h-5 text-text-low" />
+            <Link 
+              href="/app/result" 
+              className="flex items-center justify-between py-3 -mx-2 px-2 rounded-lg hover:bg-bg-1 transition-fast"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-accent" />
+                <span className="text-body text-text-high">Оценка шансов</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-caption text-text-mid">
+                  {selectedScenario ? confidenceLevelLabels[selectedScenario.confidence] : '—'}
+                </span>
+                <ChevronRight className="w-4 h-4 text-text-low" />
               </div>
             </Link>
 
-            {/* Checkout - disabled if docs not ready */}
+            {/* Checkout */}
             {allDocsReady ? (
-              <Link href="/app/checkout" className="block">
-                <div className="flex items-center justify-between p-4 rounded-xl surface-1 border-2 border-success/30 bg-success/5 hover:bg-success/10 transition-fast">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center">
-                      <CreditCard className="w-5 h-5 text-success" />
-                    </div>
-                    <div>
-                      <p className="text-label text-success">Перейти к оплате</p>
-                      <p className="text-caption text-text-mid">Документы готовы</p>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-success" />
+              <Link 
+                href="/app/checkout" 
+                className="flex items-center justify-between py-3 -mx-2 px-2 rounded-lg hover:bg-bg-1 transition-fast"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-success" />
+                  <span className="text-body text-success">Оплата</span>
                 </div>
+                <ChevronRight className="w-4 h-4 text-success" />
               </Link>
             ) : (
-              <div className="flex items-center justify-between p-4 rounded-xl surface-1 border border-border-hairline opacity-50">
+              <div className="flex items-center justify-between py-3 -mx-2 px-2 opacity-40">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-bg-2 flex items-center justify-center">
-                    <CreditCard className="w-5 h-5 text-text-low" />
-                  </div>
-                  <div>
-                    <p className="text-label text-text-mid">Оплата</p>
-                    <p className="text-caption text-text-low">Сначала загрузите документы</p>
-                  </div>
+                  <div className="w-2 h-2 rounded-full bg-text-low" />
+                  <span className="text-body text-text-mid">Оплата</span>
                 </div>
+                <span className="text-caption text-text-low">После документов</span>
               </div>
             )}
           </div>
