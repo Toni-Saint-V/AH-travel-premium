@@ -25,9 +25,9 @@ const quickLinks = [
     bgColor: 'bg-accent-2/10',
   },
   {
-    href: '/faq',
+    href: '/app/profile',
     icon: HelpCircle,
-    label: 'Помощь',
+    label: 'Профиль',
     color: 'text-text-mid',
     bgColor: 'bg-bg-2',
   },
