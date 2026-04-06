@@ -18,66 +18,71 @@ export default function ResultPage() {
       showBack 
       backHref="/app/home"
     >
-      <div className="px-4 py-6 space-y-6">
-        {/* Header */}
-        <header className="space-y-2">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">{mockActiveCase.destinationFlag}</span>
-            <h1 className="text-h2 text-text-high">{mockActiveCase.destination}</h1>
+      <div className="px-4 pt-4 pb-6">
+        {/* Hero Header - stronger visual weight */}
+        <header className="mb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="text-4xl">{mockActiveCase.destinationFlag}</span>
+            <div>
+              <h1 className="text-h2 text-text-high">{mockActiveCase.destination}</h1>
+              <p className="text-caption text-text-mid">{mockActiveCase.tripGoal}</p>
+            </div>
           </div>
-          <p className="text-body text-text-mid">
-            Мы проанализировали ваш профиль и подготовили персональные рекомендации
+          <p className="text-body text-text-mid leading-relaxed">
+            Персональный анализ вашего профиля завершён. Мы подготовили рекомендации для успешного получения визы.
           </p>
         </header>
 
-        {/* Scenario Cards - horizontal scroll */}
-        <section>
-          <SectionHeader 
-            title="Рекомендованные пути" 
-            subtitle="Листайте, чтобы увидеть все варианты"
-            className="mb-3"
-          />
-          <ScenarioCards scenarios={mockActiveCase.scenarios} />
-        </section>
-
-        {/* AI Reasoning */}
-        <AIReasoningCard insight={mockActiveCase.aiInsight || ''} />
-
-        {/* Risks for best path */}
-        {bestScenario && bestScenario.risks.length > 0 && (
+        <div className="space-y-8">
+          {/* Scenario Cards - PRIMARY FOCUS, horizontal scroll */}
           <section>
             <SectionHeader 
-              title="Риски" 
-              subtitle="На что обратить внимание"
-              className="mb-3"
+              title="Рекомендованные сценарии" 
+              subtitle="Листайте для просмотра альтернатив"
+              className="mb-4"
             />
-            <RiskList risks={bestScenario.risks} />
+            <ScenarioCards scenarios={mockActiveCase.scenarios} />
           </section>
-        )}
 
-        {/* Positive Signals */}
-        {bestScenario && bestScenario.positiveSignals.length > 0 && (
+          {/* AI Reasoning - high visual hierarchy */}
+          <AIReasoningCard insight={mockActiveCase.aiInsight || ''} />
+
+          {/* Risks for best path */}
+          {bestScenario && bestScenario.risks.length > 0 && (
+            <section>
+              <SectionHeader 
+                title="Риски и рекомендации" 
+                subtitle="На что обратить внимание"
+                className="mb-4"
+              />
+              <RiskList risks={bestScenario.risks} />
+            </section>
+          )}
+
+          {/* Positive Signals */}
+          {bestScenario && bestScenario.positiveSignals.length > 0 && (
+            <section>
+              <SectionHeader 
+                title="Сильные стороны профиля" 
+                subtitle="Факторы в вашу пользу"
+                className="mb-4"
+              />
+              <SignalList signals={bestScenario.positiveSignals} />
+            </section>
+          )}
+
+          {/* Pricing Breakdown - 3 layers always visible */}
           <section>
             <SectionHeader 
-              title="Позитивные сигналы" 
-              subtitle="Сильные стороны вашего профиля"
-              className="mb-3"
+              title="Стоимость" 
+              subtitle="Три слоя: сервис, внешние сборы, опции"
+              className="mb-4"
             />
-            <SignalList signals={bestScenario.positiveSignals} />
+            <PricingBreakdownCard pricing={mockActiveCase.pricing} />
           </section>
-        )}
+        </div>
 
-        {/* Pricing Breakdown */}
-        <section>
-          <SectionHeader 
-            title="Стоимость" 
-            subtitle="Прозрачная структура расходов"
-            className="mb-3"
-          />
-          <PricingBreakdownCard pricing={mockActiveCase.pricing} />
-        </section>
-
-        {/* CTA */}
+        {/* Sticky CTA */}
         <ResultCTA />
       </div>
     </AppShell>
