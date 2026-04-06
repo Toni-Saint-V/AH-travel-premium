@@ -32,21 +32,22 @@ export default function ResultPage() {
         
         {/* HERO: THE DECISION MOMENT - dramatic, singular focus */}
         <section className="mb-10">
-          {/* Destination - quiet context */}
-          <div className="flex items-center gap-2 mb-6 text-text-mid">
-            <span className="text-xl" suppressHydrationWarning>{mockActiveCase.destinationFlag}</span>
-            <span className="text-body">{mockActiveCase.destination}</span>
-            <span className="text-text-low">·</span>
-            <span className="text-body text-text-low">{mockActiveCase.tripGoal}</span>
+          {/* Destination - stacked for mobile */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl" suppressHydrationWarning>{mockActiveCase.destinationFlag}</span>
+              <span className="text-h3 text-text-high">{mockActiveCase.destination}</span>
+            </div>
+            <p className="text-body text-text-mid">{mockActiveCase.tripGoal}</p>
           </div>
 
           {/* THE VERDICT - absolute focal point */}
-          <div className={cn('py-8', conf.glow)}>
+          <div className={cn('py-6', conf.glow)}>
             <p className="text-caption text-text-low uppercase tracking-widest mb-3">Оценка вашего профиля</p>
-            <h1 className={cn('text-[44px] font-semibold leading-none tracking-tight mb-4', conf.color)}>
+            <h1 className={cn('text-[40px] font-semibold leading-none tracking-tight mb-5', conf.color)}>
               {conf.label}
             </h1>
-            <p className="text-body text-text-mid max-w-sm leading-relaxed">
+            <p className="text-body text-text-mid leading-relaxed">
               {selectedScenario.confidence === 'high' 
                 ? 'Ваш профиль соответствует требованиям. Высокая вероятность положительного решения.'
                 : selectedScenario.confidence === 'medium'
@@ -56,18 +57,18 @@ export default function ResultPage() {
           </div>
         </section>
 
-        {/* RECOMMENDED PATH - clean, no card border */}
-        <section className="mb-8 pb-8 border-b border-border-hairline">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
-              <Check className="w-4 h-4 text-success" />
+        {/* RECOMMENDED PATH - card style for mobile */}
+        <section className="mb-8 p-5 rounded-xl surface-1">
+          <div className="flex items-start gap-4 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center flex-shrink-0">
+              <Check className="w-5 h-5 text-success" />
             </div>
             <div>
-              <p className="text-caption text-text-low uppercase tracking-wider">Рекомендуем</p>
+              <p className="text-caption text-text-low uppercase tracking-widest mb-1">Рекомендуем</p>
               <h3 className="text-h3 text-text-high">{selectedScenario.title}</h3>
             </div>
           </div>
-          <p className="text-body text-text-mid mb-2">{selectedScenario.description}</p>
+          <p className="text-body text-text-mid mb-3">{selectedScenario.description}</p>
           <p className="text-caption text-text-low">Срок: {selectedScenario.processingTime}</p>
         </section>
 

@@ -46,12 +46,12 @@ export default function CheckoutPage() {
     >
       <div className="px-4 pt-4 pb-6">
         {/* Case Summary */}
-        <SurfaceCard className="mb-6">
-          <div className="flex items-center gap-3">
+        <SurfaceCard className="mb-8 p-5">
+          <div className="flex items-center gap-4">
             <span className="text-3xl" suppressHydrationWarning>{mockActiveCase.destinationFlag}</span>
             <div>
-              <h2 className="text-h3 text-text-high">{mockActiveCase.destination}</h2>
-              <p className="text-caption text-text-mid">{mockActiveCase.tripGoal}</p>
+              <h2 className="text-h3 text-text-high mb-1">{mockActiveCase.destination}</h2>
+              <p className="text-body text-text-mid">{mockActiveCase.tripGoal}</p>
             </div>
           </div>
         </SurfaceCard>
@@ -65,20 +65,20 @@ export default function CheckoutPage() {
             />
             
             {/* Service Fee */}
-            <SurfaceCard className="border-l-2 border-l-accent mb-3">
-              <div className="flex items-start justify-between mb-2">
-                <div>
+            <SurfaceCard className="border-l-2 border-l-accent mb-4 p-5">
+              <div className="mb-3">
+                <div className="flex items-center justify-between mb-2">
                   <p className="text-label text-text-high">Сервис AH Travel</p>
-                  <p className="text-caption text-text-mid mt-1">
-                    AI-оценка, подготовка документов, сопровождение до результата
-                  </p>
+                  <span className="text-h3 text-accent">{formatPrice(pricing.serviceFee)}</span>
                 </div>
-                <span className="text-h3 text-accent flex-shrink-0 ml-4">{formatPrice(pricing.serviceFee)}</span>
+                <p className="text-caption text-text-mid">
+                  AI-оценка, подготовка документов, сопровождение до результата
+                </p>
               </div>
             </SurfaceCard>
 
             {/* Add-ons */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               {pricing.addOns.map((addOn) => {
                 const isSelected = selectedAddOns.has(addOn.id)
                 return (
@@ -86,13 +86,13 @@ export default function CheckoutPage() {
                     key={addOn.id}
                     onClick={() => toggleAddOn(addOn.id)}
                     className={cn(
-                      'w-full flex items-start justify-between p-4 rounded-xl border transition-fast text-left',
+                      'w-full p-5 rounded-xl border transition-fast text-left',
                       isSelected
                         ? 'surface-2 border-accent/30'
                         : 'surface-1 border-border-hairline hover:surface-2'
                     )}
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-4">
                       <div className={cn(
                         'w-6 h-6 rounded-md border-2 flex items-center justify-center transition-fast flex-shrink-0 mt-0.5',
                         isSelected
@@ -105,17 +105,19 @@ export default function CheckoutPage() {
                           <Plus className="w-4 h-4 text-text-low" />
                         )}
                       </div>
-                      <div>
-                        <span className="text-body text-text-high">{addOn.label}</span>
-                        <p className="text-caption text-text-mid mt-0.5">{addOn.description}</p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-label text-text-high">{addOn.label}</span>
+                          <span className={cn(
+                            'text-label flex-shrink-0 ml-3',
+                            isSelected ? 'text-accent' : 'text-text-mid'
+                          )}>
+                            +{formatPrice(addOn.amount)}
+                          </span>
+                        </div>
+                        <p className="text-caption text-text-mid">{addOn.description}</p>
                       </div>
                     </div>
-                    <span className={cn(
-                      'text-body flex-shrink-0 ml-4',
-                      isSelected ? 'text-accent' : 'text-text-mid'
-                    )}>
-                      +{formatPrice(addOn.amount)}
-                    </span>
                   </button>
                 )
               })}
