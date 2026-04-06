@@ -1,38 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { Plus, Zap } from 'lucide-react'
-import { SectionHeader } from '@/components/ui/section-header'
+import { Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-interface StartNewCaseProps {
-  hasActiveCase: boolean
-}
-
-export function StartNewCase({ hasActiveCase }: StartNewCaseProps) {
-  if (hasActiveCase) {
-    return (
-      <section className="space-y-3">
-        <SectionHeader 
-          title="Новая заявка" 
-          subtitle="Начните оформление другой поездки"
-        />
-        <Link
-          href="/app/questionnaire"
-          className={cn(
-            'flex items-center justify-center gap-2 w-full h-12',
-            'rounded-xl border border-dashed border-border-strong',
-            'text-label text-text-mid hover:text-text-high hover:border-accent/50',
-            'transition-fast touch-target'
-          )}
-        >
-          <Plus className="w-5 h-5" />
-          <span>Проверить шансы</span>
-        </Link>
-      </section>
-    )
-  }
-
+export function StartNewCase() {
   return (
     <section className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
       <div className="w-16 h-16 rounded-2xl bg-accent/15 flex items-center justify-center mb-6">

@@ -11,7 +11,8 @@ import {
   FileText,
   RefreshCw,
   Trash2,
-  Info
+  Info,
+  Check
 } from 'lucide-react'
 import { AppShell } from '@/components/layout/app-shell'
 import { SurfaceCard } from '@/components/ui/surface-card'
@@ -28,13 +29,50 @@ const statusConfig: Record<DocumentStatus, {
   variant: 'neutral' | 'accent' | 'success' | 'warning' | 'danger' | 'info'
   color: string
   bgColor: string
+  nextActionText: string
 }> = {
-  missing: { icon: Upload, variant: 'danger', color: 'text-danger', bgColor: 'bg-danger/10' },
-  needs_fix: { icon: AlertTriangle, variant: 'warning', color: 'text-warning', bgColor: 'bg-warning/10' },
-  uploaded: { icon: Clock, variant: 'info', color: 'text-accent-2', bgColor: 'bg-accent-2/10' },
-  reviewing: { icon: Clock, variant: 'info', color: 'text-accent-2', bgColor: 'bg-accent-2/10' },
-  verified: { icon: CheckCircle2, variant: 'success', color: 'text-success', bgColor: 'bg-success/10' },
-  expired: { icon: Calendar, variant: 'danger', color: 'text-danger', bgColor: 'bg-danger/10' },
+  missing: { 
+    icon: Upload, 
+    variant: 'danger', 
+    color: 'text-danger', 
+    bgColor: 'bg-danger/10',
+    nextActionText: 'Загрузите документ, чтобы продолжить оформление'
+  },
+  needs_fix: { 
+    icon: AlertTriangle, 
+    variant: 'warning', 
+    color: 'text-warning', 
+    bgColor: 'bg-warning/10',
+    nextActionText: 'Исправьте отмеченные проблемы и загрузите повторно'
+  },
+  uploaded: { 
+    icon: Clock, 
+    variant: 'info', 
+    color: 'text-accent-2', 
+    bgColor: 'bg-accent-2/10',
+    nextActionText: 'Документ ожидает проверки'
+  },
+  reviewing: { 
+    icon: Clock, 
+    variant: 'info', 
+    color: 'text-accent-2', 
+    bgColor: 'bg-accent-2/10',
+    nextActionText: 'Проверка обычно занимает 1-2 рабочих дня'
+  },
+  verified: { 
+    icon: CheckCircle2, 
+    variant: 'success', 
+    color: 'text-success', 
+    bgColor: 'bg-success/10',
+    nextActionText: 'Документ принят и готов к подаче'
+  },
+  expired: { 
+    icon: Calendar, 
+    variant: 'danger', 
+    color: 'text-danger', 
+    bgColor: 'bg-danger/10',
+    nextActionText: 'Срок действия истёк — загрузите актуальный документ'
+  },
 }
 
 export default function DocumentDetailPage({ params }: PageProps) {
@@ -48,6 +86,7 @@ export default function DocumentDetailPage({ params }: PageProps) {
   const config = statusConfig[document.status]
   const StatusIcon = config.icon
   const hasIssues = document.issues && document.issues.length > 0
+  const hasRequirements = document.requirements && document.requirements.length > 0
   const canUpload = document.status === 'missing' || document.status === 'needs_fix' || document.status === 'expired'
   const canReplace = document.status === 'uploaded' || document.status === 'verified'
 
@@ -72,24 +111,28 @@ export default function DocumentDetailPage({ params }: PageProps) {
               {documentStatusLabels[document.status]}
             </StatusBadge>
             
+            <p className="text-caption text-text-mid mt-3">{config.nextActionText}</p>
+            
             {document.isReusable && (
               <p className="text-caption text-accent-2 mt-2">
-                Многоразовый документ — можно использовать в других заявках
+                Многоразовый — можно использовать в других заявках
               </p>
             )}
           </SurfaceCard>
 
-          {/* Issues Section */}
+          {/* Issues Section - BLOCKER */}
           {hasIssues && (
-            <SurfaceCard className="border-l-2 border-l-warning">
+            <SurfaceCard className="border-l-2 border-l-danger bg-danger/5">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 text-danger flex-shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <h3 className="text-label text-text-high mb-2">Проблемы для исправления</h3>
+                  <h3 className="text-label text-danger mb-2">Что нужно исправить</h3>
                   <ul className="space-y-2">
                     {document.issues!.map((issue, index) => (
                       <li key={index} className="text-body text-text-mid flex items-start gap-2">
-                        <span className="text-warning">•</span>
+                        <span className="w-5 h-5 rounded-full bg-danger/10 flex items-center justify-center flex-shrink-0 text-caption text-danger">
+                          {index + 1}
+                        </span>
                         {issue}
                       </li>
                     ))}
@@ -100,65 +143,29 @@ export default function DocumentDetailPage({ params }: PageProps) {
           )}
 
           {/* Requirements */}
-          <SurfaceCard>
-            <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-accent-2 flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="text-label text-text-high mb-2">Требования к документу</h3>
-                <ul className="space-y-1.5 text-caption text-text-mid">
-                  {document.type === 'passport' && (
-                    <>
-                      <li>• Скан всех страниц с отметками</li>
-                      <li>• Срок действия не менее 6 месяцев после поездки</li>
-                      <li>• Минимум 2 пустые страницы</li>
-                    </>
-                  )}
-                  {document.type === 'photo' && (
-                    <>
-                      <li>• Размер 3.5×4.5 см</li>
-                      <li>• Белый фон</li>
-                      <li>• Сделана не более 6 месяцев назад</li>
-                    </>
-                  )}
-                  {document.type === 'bank_statement' && (
-                    <>
-                      <li>• Выписка за последние 3 месяца</li>
-                      <li>• На фирменном бланке банка</li>
-                      <li>• С печатью и подписью</li>
-                      <li>• Остаток не менее 70€ на день поездки</li>
-                    </>
-                  )}
-                  {document.type === 'employment' && (
-                    <>
-                      <li>• На фирменном бланке организации</li>
-                      <li>• Указана должность и стаж</li>
-                      <li>• Указан размер зарплаты</li>
-                      <li>• Подпись руководителя и печать</li>
-                    </>
-                  )}
-                  {document.type === 'insurance' && (
-                    <>
-                      <li>• Покрытие не менее 30 000€</li>
-                      <li>• Действует на все дни поездки</li>
-                      <li>• Покрывает все страны Шенгена</li>
-                    </>
-                  )}
-                  {document.type === 'hotel' && (
-                    <>
-                      <li>• Подтверждение на все даты поездки</li>
-                      <li>• Имя совпадает с паспортом</li>
-                      <li>• Указан адрес отеля</li>
-                    </>
-                  )}
-                </ul>
+          {hasRequirements && (
+            <SurfaceCard>
+              <div className="flex items-start gap-3">
+                <Info className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                <div>
+                  <h3 className="text-label text-text-high mb-3">Требования к документу</h3>
+                  <ul className="space-y-2">
+                    {document.requirements!.map((req, index) => (
+                      <li key={index} className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-text-low flex-shrink-0 mt-0.5" />
+                        <span className="text-body text-text-mid">{req}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
-          </SurfaceCard>
+            </SurfaceCard>
+          )}
 
           {/* Document Preview Placeholder */}
           {(document.status === 'uploaded' || document.status === 'reviewing' || document.status === 'verified' || document.status === 'needs_fix') && (
             <SurfaceCard padding="none" className="overflow-hidden">
-              <div className="aspect-[3/4] bg-bg-2 flex items-center justify-center">
+              <div className="aspect-[3/4] surface-2 flex items-center justify-center">
                 <div className="text-center">
                   <FileText className="w-12 h-12 text-text-low mx-auto mb-2" />
                   <p className="text-caption text-text-low">Предпросмотр документа</p>

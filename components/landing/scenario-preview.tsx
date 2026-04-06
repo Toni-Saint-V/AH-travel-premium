@@ -3,11 +3,11 @@ import { cn } from '@/lib/utils'
 
 const scenarios = [
   {
-    path: 'best' as const,
+    path: 'recommended' as const,
     icon: Check,
-    label: 'Лучший путь',
+    label: 'Рекомендуем',
     title: 'Шенген через Испанию',
-    successRate: 94,
+    confidence: 'Высокая уверенность',
     color: 'text-success',
     bgColor: 'bg-success/10',
     borderColor: 'border-success/30',
@@ -17,17 +17,17 @@ const scenarios = [
     icon: AlertTriangle,
     label: 'Альтернатива',
     title: 'Шенген через Францию',
-    successRate: 87,
+    confidence: 'Средняя уверенность',
     color: 'text-warning',
     bgColor: 'bg-warning/10',
     borderColor: 'border-warning/30',
   },
   {
-    path: 'rejected' as const,
+    path: 'not_recommended' as const,
     icon: X,
     label: 'Не рекомендуется',
     title: 'Без финансовых документов',
-    successRate: 23,
+    confidence: 'Низкая уверенность',
     color: 'text-danger',
     bgColor: 'bg-danger/10',
     borderColor: 'border-danger/30',
@@ -54,7 +54,7 @@ export function ScenarioPreview() {
                 className={cn(
                   'p-4 rounded-xl border surface-0',
                   scenario.borderColor,
-                  scenario.path === 'best' && 'glow-success'
+                  scenario.path === 'recommended' && 'glow-success'
                 )}
               >
                 <div className="flex items-center justify-between mb-3">
@@ -67,12 +67,8 @@ export function ScenarioPreview() {
                       {scenario.label}
                     </span>
                   </div>
-                  <span className={cn(
-                    'text-h3',
-                    scenario.successRate >= 80 ? 'text-success' :
-                    scenario.successRate >= 50 ? 'text-warning' : 'text-danger'
-                  )}>
-                    {scenario.successRate}%
+                  <span className={cn('text-caption', scenario.color)}>
+                    {scenario.confidence}
                   </span>
                 </div>
                 <h3 className="text-label text-text-high">{scenario.title}</h3>

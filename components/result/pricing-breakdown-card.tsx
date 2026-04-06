@@ -16,16 +16,16 @@ function formatPrice(amount: number, currency: string) {
 
 export function PricingBreakdownCard({ pricing }: PricingBreakdownCardProps) {
   const [selectedAddOns, setSelectedAddOns] = useState<Set<string>>(
-    new Set(pricing.addOns.filter(a => a.selected).map(a => a.label))
+    new Set(pricing.addOns.filter(a => a.selected).map(a => a.id))
   )
 
-  const toggleAddOn = (label: string) => {
+  const toggleAddOn = (id: string) => {
     setSelectedAddOns(prev => {
       const next = new Set(prev)
-      if (next.has(label)) {
-        next.delete(label)
+      if (next.has(id)) {
+        next.delete(id)
       } else {
-        next.add(label)
+        next.add(id)
       }
       return next
     })
@@ -33,7 +33,7 @@ export function PricingBreakdownCard({ pricing }: PricingBreakdownCardProps) {
 
   const externalTotal = pricing.externalFees.reduce((sum, fee) => sum + fee.amount, 0)
   const addOnsTotal = pricing.addOns
-    .filter(a => selectedAddOns.has(a.label))
+    .filter(a => selectedAddOns.has(a.id))
     .reduce((sum, a) => sum + a.amount, 0)
   const grandTotal = pricing.serviceFee + externalTotal + addOnsTotal
 
@@ -58,7 +58,12 @@ export function PricingBreakdownCard({ pricing }: PricingBreakdownCardProps) {
         <div className="space-y-2">
           {pricing.externalFees.map((fee) => (
             <div key={fee.label} className="flex items-center justify-between">
-              <span className="text-body text-text-mid">{fee.label}</span>
+              <div>
+                <span className="text-body text-text-mid">{fee.label}</span>
+                {fee.paymentTime === 'later' && (
+                  <span className="text-caption text-text-low ml-2">(при подаче)</span>
+                )}
+              </div>
               <span className="text-body text-text-high">
                 {formatPrice(fee.amount, pricing.currency)}
               </span>
@@ -72,21 +77,21 @@ export function PricingBreakdownCard({ pricing }: PricingBreakdownCardProps) {
         <div className="text-caption text-text-mid mb-3">Дополнительные услуги</div>
         <div className="space-y-2">
           {pricing.addOns.map((addOn) => {
-            const isSelected = selectedAddOns.has(addOn.label)
+            const isSelected = selectedAddOns.has(addOn.id)
             return (
               <button
-                key={addOn.label}
-                onClick={() => toggleAddOn(addOn.label)}
+                key={addOn.id}
+                onClick={() => toggleAddOn(addOn.id)}
                 className={cn(
-                  'w-full flex items-center justify-between p-3 rounded-lg border transition-fast text-left',
+                  'w-full flex items-start justify-between p-3 rounded-lg border transition-fast text-left',
                   isSelected
                     ? 'border-accent/30 bg-accent/5'
                     : 'border-border-hairline hover:border-border-strong'
                 )}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-start gap-3">
                   <div className={cn(
-                    'w-5 h-5 rounded-md border flex items-center justify-center transition-fast',
+                    'w-5 h-5 rounded-md border flex items-center justify-center transition-fast flex-shrink-0 mt-0.5',
                     isSelected
                       ? 'bg-accent border-accent'
                       : 'border-border-strong'
@@ -97,10 +102,13 @@ export function PricingBreakdownCard({ pricing }: PricingBreakdownCardProps) {
                       <Plus className="w-3 h-3 text-text-low" />
                     )}
                   </div>
-                  <span className="text-body text-text-high">{addOn.label}</span>
+                  <div>
+                    <span className="text-body text-text-high">{addOn.label}</span>
+                    <p className="text-caption text-text-mid mt-0.5">{addOn.description}</p>
+                  </div>
                 </div>
                 <span className={cn(
-                  'text-body',
+                  'text-body flex-shrink-0 ml-3',
                   isSelected ? 'text-accent' : 'text-text-mid'
                 )}>
                   +{formatPrice(addOn.amount, pricing.currency)}

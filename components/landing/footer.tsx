@@ -9,7 +9,7 @@ const links = {
   company: [
     { label: 'Как это работает', href: '/#how-it-works' },
     { label: 'Цены', href: '/#pricing' },
-    { label: 'Вопросы и ответы', href: '/#faq' },
+    { label: 'Поддержка', href: '#' },
   ],
   legal: [
     { label: 'Политика конфиденциальности', href: '#' },
