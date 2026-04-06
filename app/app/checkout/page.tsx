@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, Plus, Shield, CreditCard, Lock, HelpCircle, MessageCircle, FileText, Clock, ArrowRight } from 'lucide-react'
+import { Check, Plus, Shield, Lock, HelpCircle, MessageCircle, FileText, Clock, ArrowRight, CreditCard } from 'lucide-react'
 import { AppShell } from '@/components/layout/app-shell'
 import { SurfaceCard } from '@/components/ui/surface-card'
 import { SectionHeader } from '@/components/ui/section-header'
@@ -218,19 +218,18 @@ export default function CheckoutPage() {
           </section>
         </div>
 
-        {/* CTA */}
-        <div className="mt-8 space-y-3">
+        {/* CTA - dominant */}
+        <div className="mt-10 space-y-4">
           <button
             className={cn(
-              'flex items-center justify-center gap-2 w-full h-14',
-              'rounded-xl bg-accent text-white font-semibold',
-              'hover:bg-accent/90 active:scale-[0.98]',
-              'transition-fast touch-target',
-              'shadow-[0_0_30px_rgba(108,99,255,0.2)]'
+              'flex items-center justify-center gap-3 w-full h-16',
+              'rounded-2xl bg-accent text-white font-semibold text-base',
+              'hover:bg-accent/90 active:scale-[0.98] active:translate-y-px',
+              'transition-fast'
             )}
           >
-            <CreditCard className="w-5 h-5" />
             Оплатить {formatPrice(payNowTotal)}
+            <ArrowRight className="w-5 h-5" />
           </button>
           
           <p className="text-caption text-text-low text-center">

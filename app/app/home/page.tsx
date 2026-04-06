@@ -9,20 +9,18 @@ export default function HomePage() {
   return (
     <AppShell hideTopBar>
       <div className="px-4 pt-6 pb-6">
-        {/* Header */}
-        <header className="mb-6">
-          <p className="text-caption text-text-mid mb-1">AH Travel</p>
-          <h1 className="text-h2 text-text-high">Ваша заявка</h1>
+        {/* Header - minimal */}
+        <header className="mb-8">
+          <p className="text-caption text-text-low mb-1">AH Travel</p>
+          <h1 className="text-display text-text-high">Ваша заявка</h1>
         </header>
 
-        <div className="space-y-5">
-          {/* Case Command Center - single source of truth */}
-          {hasActiveCase ? (
-            <CaseCommandCenter caseData={mockActiveCase} />
-          ) : (
-            <StartNewCase />
-          )}
-        </div>
+        {/* Content */}
+        {hasActiveCase ? (
+          <CaseCommandCenter caseData={mockActiveCase} />
+        ) : (
+          <StartNewCase />
+        )}
       </div>
     </AppShell>
   )
