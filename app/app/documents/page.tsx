@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, AlertOctagon, CheckCircle2, Clock } from 'lucide-react'
+import { ArrowRight, AlertOctagon, CheckCircle2 } from 'lucide-react'
 import { AppShell } from '@/components/layout/app-shell'
 import { DocumentList } from '@/components/documents/document-list'
 import { mockActiveCase, getDocumentStats, getCriticalDocuments } from '@/lib/mock-data'
@@ -14,116 +14,80 @@ export default function DocumentsPage() {
 
   return (
     <AppShell title="Документы">
-      <div className="px-4 pt-4 pb-6">
+      <div className="px-4 pt-6 pb-6">
         
-        {/* HERO: The dominant element - either blockers or progress */}
-        {criticalBlockers.length > 0 ? (
-          // BLOCKERS - Urgent, dominant when present
-          <section className="mb-6">
-            <div className="rounded-2xl border-2 border-danger/30 bg-danger/5 p-5">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-danger/10 flex items-center justify-center flex-shrink-0">
-                  <AlertOctagon className="w-6 h-6 text-danger" />
-                </div>
-                <div>
-                  <h1 className="text-h2 text-danger mb-1">Подача невозможна</h1>
-                  <p className="text-body text-text-mid">
-                    {criticalBlockers.length} обязательных {criticalBlockers.length === 1 ? 'документ требует' : 'документа требуют'} вашего внимания
-                  </p>
-                </div>
+        {/* HERO: Progress or Status - THE focal point */}
+        <section className="mb-8">
+          {criticalBlockers.length > 0 ? (
+            // BLOCKERS - dramatic, stops you
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <AlertOctagon className="w-5 h-5 text-danger" />
+                <span className="text-caption text-danger uppercase tracking-widest">Блокирует подачу</span>
               </div>
-
-              {/* Blocker list - inline, not separate component */}
-              <div className="space-y-2">
+              <h1 className="text-[36px] font-semibold text-danger leading-none mb-4">
+                {criticalBlockers.length} {criticalBlockers.length === 1 ? 'документ' : 'документа'}
+              </h1>
+              <div className="space-y-1">
                 {criticalBlockers.map((doc) => (
                   <Link
                     key={doc.id}
                     href={`/app/documents/${doc.id}`}
-                    className="flex items-center justify-between p-3 rounded-xl bg-bg-1 border border-border-hairline hover:surface-2 transition-fast"
+                    className="flex items-center justify-between py-3 border-b border-border-hairline last:border-0 hover:bg-bg-1 -mx-2 px-2 rounded transition-fast"
                   >
-                    <div className="flex-1 min-w-0">
-                      <p className="text-label text-text-high">{doc.name}</p>
-                      <p className="text-caption text-danger">
-                        {doc.status === 'missing' ? 'Не загружен' : doc.issues?.[0] || 'Требует исправления'}
-                      </p>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-danger flex-shrink-0 ml-3" />
+                    <span className="text-body text-text-high">{doc.name}</span>
+                    <ArrowRight className="w-4 h-4 text-danger" />
                   </Link>
                 ))}
               </div>
             </div>
-          </section>
-        ) : allReady ? (
-          // ALL READY - Success state
-          <section className="mb-6">
-            <div className="rounded-2xl border-2 border-success/30 bg-success/5 p-5">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center flex-shrink-0">
-                  <CheckCircle2 className="w-6 h-6 text-success" />
-                </div>
-                <div>
-                  <h1 className="text-h2 text-success mb-1">Все готово</h1>
-                  <p className="text-body text-text-mid">
-                    Документы проверены и готовы к подаче
-                  </p>
-                </div>
+          ) : allReady ? (
+            // ALL READY - success, calm
+            <div className="py-6">
+              <div className="flex items-center gap-3 mb-2">
+                <CheckCircle2 className="w-5 h-5 text-success" />
+                <span className="text-caption text-success uppercase tracking-widest">Готово к подаче</span>
               </div>
+              <h1 className="text-[36px] font-semibold text-success leading-none">
+                Все документы
+              </h1>
             </div>
-          </section>
-        ) : (
-          // IN PROGRESS - Neutral but clear
-          <section className="mb-6">
-            <div className="rounded-2xl border border-border-strong bg-bg-1 p-5">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h1 className="text-h2 text-text-high mb-1">Документы</h1>
-                  <p className="text-body text-text-mid">
-                    Загружайте и отслеживайте статус
-                  </p>
-                </div>
-                {/* THE NUMBER - must stand out */}
-                <div className="text-right">
-                  <div className="text-display text-accent">{percentage}%</div>
-                  <p className="text-caption text-text-mid">готовность</p>
-                </div>
+          ) : (
+            // IN PROGRESS - the number dominates
+            <div className="py-4">
+              <p className="text-caption text-text-low uppercase tracking-widest mb-2">Готовность документов</p>
+              <div className="flex items-baseline gap-3 mb-4">
+                <span className="text-[56px] font-semibold text-text-high leading-none tabular-nums">{percentage}</span>
+                <span className="text-h2 text-text-low">%</span>
               </div>
-
-              {/* Progress bar - larger, more impactful */}
-              <div className="h-3 rounded-full bg-bg-2 overflow-hidden">
+              {/* Progress bar - minimal */}
+              <div className="h-1 rounded-full bg-bg-2 overflow-hidden mb-3">
                 <div 
                   className="h-full bg-accent rounded-full transition-all duration-500"
                   style={{ width: `${percentage}%` }}
                 />
               </div>
-
-              {/* Stats - compact row */}
-              <div className="flex items-center gap-4 mt-3 text-caption">
-                <span className="text-success">{stats.verified} проверено</span>
-                {stats.reviewing > 0 && (
-                  <span className="text-accent-2">{stats.reviewing} на проверке</span>
-                )}
-                {stats.blockers > 0 && (
-                  <span className="text-warning">{stats.blockers} требуют действий</span>
-                )}
-              </div>
+              <p className="text-caption text-text-low">
+                {stats.verified} из {stats.total} проверено
+              </p>
             </div>
-          </section>
-        )}
+          )}
+        </section>
 
-        {/* Document List - secondary */}
+        {/* Document List - flows below */}
         <DocumentList documents={documents} />
       </div>
 
       {/* Sticky CTA when all ready */}
       {allReady && (
-        <div className="sticky bottom-[calc(56px+max(16px,var(--safe-bottom,0px)))] left-0 right-0 px-4 py-4 surface-0 border-t border-border-hairline">
+        <div className="sticky bottom-[calc(56px+max(16px,var(--safe-bottom,0px)))] left-0 right-0 px-4 py-4 surface-0">
           <Link
             href="/app/checkout"
             className={cn(
-              'flex items-center justify-center gap-2 w-full h-14',
-              'rounded-xl bg-success text-white font-semibold',
-              'hover:bg-success/90 active:scale-[0.98] active:translate-y-px',
-              'transition-fast'
+              'flex items-center justify-center gap-3 w-full h-16',
+              'rounded-2xl bg-success text-white font-semibold',
+              'hover:bg-success/90 active:scale-[0.98]',
+              'transition-fast shadow-[0_0_40px_rgba(59,214,113,0.25)]'
             )}
           >
             Перейти к оплате

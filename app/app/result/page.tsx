@@ -2,15 +2,15 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Check, AlertTriangle, X, TrendingUp, ChevronDown } from 'lucide-react'
+import { ArrowRight, Check, AlertTriangle, X, ChevronDown } from 'lucide-react'
 import { AppShell } from '@/components/layout/app-shell'
-import { mockActiveCase, confidenceLevelLabels, ScenarioPath } from '@/lib/mock-data'
+import { mockActiveCase } from '@/lib/mock-data'
 import { cn } from '@/lib/utils'
 
 const confidenceConfig = {
-  high: { label: 'Высокие шансы', color: 'text-success', bg: 'bg-success/10', border: 'border-success/20' },
-  medium: { label: 'Средние шансы', color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/20' },
-  low: { label: 'Низкие шансы', color: 'text-danger', bg: 'bg-danger/10', border: 'border-danger/20' },
+  high: { label: 'Высокие шансы', color: 'text-success', glow: 'shadow-[0_0_60px_rgba(59,214,113,0.15)]' },
+  medium: { label: 'Средние шансы', color: 'text-warning', glow: 'shadow-[0_0_60px_rgba(255,181,71,0.15)]' },
+  low: { label: 'Низкие шансы', color: 'text-danger', glow: 'shadow-[0_0_60px_rgba(255,92,124,0.15)]' },
 }
 
 export default function ResultPage() {
@@ -28,177 +28,133 @@ export default function ResultPage() {
       showBack 
       backHref="/app/questionnaire"
     >
-      <div className="px-4 pt-4 pb-8">
+      <div className="px-4 pt-6 pb-8">
         
-        {/* HERO: Confidence Level - THE dominant element */}
-        <section className="mb-8">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-4xl" suppressHydrationWarning>{mockActiveCase.destinationFlag}</span>
-            <div>
-              <h1 className="text-h2 text-text-high">{mockActiveCase.destination}</h1>
-              <p className="text-caption text-text-mid">{mockActiveCase.tripGoal}</p>
-            </div>
+        {/* HERO: THE DECISION MOMENT - dramatic, singular focus */}
+        <section className="mb-10">
+          {/* Destination - quiet context */}
+          <div className="flex items-center gap-2 mb-6 text-text-mid">
+            <span className="text-xl" suppressHydrationWarning>{mockActiveCase.destinationFlag}</span>
+            <span className="text-body">{mockActiveCase.destination}</span>
+            <span className="text-text-low">·</span>
+            <span className="text-body text-text-low">{mockActiveCase.tripGoal}</span>
           </div>
 
-          {/* THE NUMBER - must dominate */}
-          <div className={cn(
-            'rounded-2xl p-6 border',
-            conf.bg, conf.border
-          )}>
-            <p className="text-caption text-text-mid mb-2">Оценка вашего профиля</p>
-            <div className={cn('text-display mb-1', conf.color)}>
+          {/* THE VERDICT - absolute focal point */}
+          <div className={cn('py-8', conf.glow)}>
+            <p className="text-caption text-text-low uppercase tracking-widest mb-3">Оценка вашего профиля</p>
+            <h1 className={cn('text-[44px] font-semibold leading-none tracking-tight mb-4', conf.color)}>
               {conf.label}
-            </div>
-            <p className="text-body text-text-mid">
+            </h1>
+            <p className="text-body text-text-mid max-w-sm leading-relaxed">
               {selectedScenario.confidence === 'high' 
                 ? 'Ваш профиль соответствует требованиям. Высокая вероятность положительного решения.'
                 : selectedScenario.confidence === 'medium'
-                ? 'Есть факторы риска, но шансы на успех хорошие при правильной подготовке.'
-                : 'Рекомендуем усилить профиль перед подачей для повышения шансов.'}
+                ? 'Есть факторы риска, но шансы хорошие при правильной подготовке.'
+                : 'Рекомендуем усилить профиль перед подачей.'}
             </p>
           </div>
         </section>
 
-        {/* RECOMMENDED PATH - secondary but clear */}
-        <section className="mb-6">
-          <h2 className="text-label text-text-mid uppercase tracking-wider mb-3">Рекомендуем</h2>
-          <div className="surface-1 rounded-xl p-4 border border-border-hairline">
-            <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center flex-shrink-0">
-                <Check className="w-5 h-5 text-success" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-h3 text-text-high">{selectedScenario.title}</h3>
-                <p className="text-body text-text-mid mt-1">{selectedScenario.description}</p>
-              </div>
+        {/* RECOMMENDED PATH - clean, no card border */}
+        <section className="mb-8 pb-8 border-b border-border-hairline">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center">
+              <Check className="w-4 h-4 text-success" />
             </div>
-            <div className="flex items-center gap-4 text-caption text-text-mid">
-              <span>Срок: <span className="text-text-high">{selectedScenario.processingTime}</span></span>
+            <div>
+              <p className="text-caption text-text-low uppercase tracking-wider">Рекомендуем</p>
+              <h3 className="text-h3 text-text-high">{selectedScenario.title}</h3>
             </div>
           </div>
+          <p className="text-body text-text-mid mb-2">{selectedScenario.description}</p>
+          <p className="text-caption text-text-low">Срок: {selectedScenario.processingTime}</p>
         </section>
 
-        {/* WHY - reasoning without collapse */}
-        <section className="mb-6">
-          <h2 className="text-label text-text-mid uppercase tracking-wider mb-3">Почему этот путь</h2>
-          <p className="text-body text-text-mid leading-relaxed mb-4">
+        {/* WHY + STRENGTHS/RISKS - quieter, flows naturally */}
+        <section className="mb-8 space-y-6">
+          <p className="text-body text-text-mid leading-relaxed">
             {selectedScenario.whyThisPath}
           </p>
 
-          {/* Strengths - compact */}
+          {/* Strengths - inline, minimal */}
           {selectedScenario.strengths.length > 0 && (
-            <div className="mb-4">
-              <p className="text-label text-success mb-2">Сильные стороны</p>
-              <div className="space-y-2">
-                {selectedScenario.strengths.map(s => (
-                  <div key={s.id} className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-success flex-shrink-0 mt-0.5" />
-                    <span className="text-body text-text-high">{s.title}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="space-y-1.5">
+              {selectedScenario.strengths.map(s => (
+                <div key={s.id} className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-success/70 flex-shrink-0 mt-0.5" />
+                  <span className="text-body text-text-mid">{s.title}</span>
+                </div>
+              ))}
             </div>
           )}
 
-          {/* Risks - compact */}
+          {/* Risks - subtle warning */}
           {selectedScenario.risks.length > 0 && (
-            <div className="mb-4">
-              <p className="text-label text-warning mb-2">На что обратить внимание</p>
-              <div className="space-y-2">
-                {selectedScenario.risks.map(r => (
-                  <div key={r.id} className="flex items-start gap-2">
-                    <AlertTriangle className={cn(
-                      'w-4 h-4 flex-shrink-0 mt-0.5',
-                      r.severity === 'high' ? 'text-danger' : 'text-warning'
-                    )} />
-                    <div>
-                      <span className="text-body text-text-high">{r.title}</span>
-                      {r.recommendation && (
-                        <p className="text-caption text-text-mid mt-0.5">{r.recommendation}</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="space-y-1.5">
+              {selectedScenario.risks.map(r => (
+                <div key={r.id} className="flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 text-warning/70 flex-shrink-0 mt-0.5" />
+                  <span className="text-body text-text-mid">{r.title}</span>
+                </div>
+              ))}
             </div>
           )}
 
-          {/* Improvements - if any */}
+          {/* Improvements - if any, subtle highlight */}
           {selectedScenario.whatImproves.length > 0 && (
-            <div className="p-3 rounded-lg bg-accent/5 border border-accent/10">
-              <p className="text-label text-accent mb-2">Что повысит шансы</p>
-              <div className="space-y-1.5">
-                {selectedScenario.whatImproves.map((item, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <TrendingUp className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                    <span className="text-caption text-text-mid">{item}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="pl-4 border-l-2 border-accent/30">
+              <p className="text-caption text-accent mb-1.5">Что повысит шансы</p>
+              {selectedScenario.whatImproves.map((item, i) => (
+                <p key={i} className="text-caption text-text-mid">{item}</p>
+              ))}
             </div>
           )}
         </section>
 
-        {/* ALTERNATIVES - collapsed by default, minimal */}
+        {/* ALTERNATIVES - very minimal */}
         {otherScenarios.length > 0 && (
-          <section className="mb-8">
-            <button
-              onClick={() => setShowAlternatives(!showAlternatives)}
-              className="flex items-center justify-between w-full py-3 text-left"
-            >
-              <span className="text-label text-text-mid">
-                {showAlternatives ? 'Скрыть' : 'Показать'} другие варианты ({otherScenarios.length})
-              </span>
-              <ChevronDown className={cn(
-                'w-5 h-5 text-text-low transition-transform',
-                showAlternatives && 'rotate-180'
-              )} />
-            </button>
-            
-            {showAlternatives && (
-              <div className="space-y-2 pt-2">
-                {otherScenarios.map(scenario => (
-                  <button
-                    key={scenario.id}
-                    onClick={() => {
-                      setSelectedScenarioId(scenario.id)
-                      setShowAlternatives(false)
-                    }}
-                    className="w-full p-3 rounded-lg surface-1 border border-border-hairline text-left hover:surface-2 transition-fast"
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      {scenario.path === 'alternative' && (
-                        <AlertTriangle className="w-4 h-4 text-warning" />
-                      )}
-                      {scenario.path === 'not_recommended' && (
-                        <X className="w-4 h-4 text-danger" />
-                      )}
-                      <span className="text-label text-text-high">{scenario.title}</span>
-                    </div>
-                    <p className="text-caption text-text-mid line-clamp-1">{scenario.description}</p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
+          <button
+            onClick={() => setShowAlternatives(!showAlternatives)}
+            className="flex items-center gap-2 py-3 mb-6 text-caption text-text-low hover:text-text-mid transition-fast"
+          >
+            <ChevronDown className={cn('w-4 h-4 transition-transform', showAlternatives && 'rotate-180')} />
+            {showAlternatives ? 'Скрыть варианты' : `${otherScenarios.length} других вариантов`}
+          </button>
+        )}
+        
+        {showAlternatives && otherScenarios.length > 0 && (
+          <div className="space-y-2 mb-8">
+            {otherScenarios.map(scenario => (
+              <button
+                key={scenario.id}
+                onClick={() => { setSelectedScenarioId(scenario.id); setShowAlternatives(false) }}
+                className="flex items-center gap-3 w-full p-3 text-left hover:bg-bg-1 rounded-lg transition-fast"
+              >
+                {scenario.path === 'alternative' && <AlertTriangle className="w-4 h-4 text-warning/50" />}
+                {scenario.path === 'not_recommended' && <X className="w-4 h-4 text-danger/50" />}
+                <span className="text-body text-text-mid">{scenario.title}</span>
+              </button>
+            ))}
+          </div>
         )}
 
-        {/* CTA - dominant, clear */}
-        <div className="space-y-3">
+        {/* CTA - THE action, dramatic */}
+        <div className="mt-auto pt-8">
           <Link
             href="/app/home"
             className={cn(
-              'flex items-center justify-center gap-2 w-full h-14',
-              'rounded-xl bg-accent text-white font-semibold text-base',
-              'hover:bg-accent/90 active:scale-[0.98] active:translate-y-px',
-              'transition-fast'
+              'flex items-center justify-center gap-3 w-full h-16',
+              'rounded-2xl bg-accent text-white font-semibold text-base',
+              'hover:bg-accent/90 active:scale-[0.98]',
+              'transition-fast shadow-[0_0_40px_rgba(108,99,255,0.25)]'
             )}
           >
             Начать оформление
             <ArrowRight className="w-5 h-5" />
           </Link>
-          <p className="text-caption text-text-low text-center">
-            Далее: загрузка документов и сопровождение до решения
+          <p className="text-caption text-text-low text-center mt-4">
+            Далее: загрузка документов и сопровождение
           </p>
         </div>
       </div>
