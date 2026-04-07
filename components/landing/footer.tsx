@@ -19,72 +19,57 @@ const links = {
 
 export function Footer() {
   return (
-    <footer className="py-12 px-4 border-t border-border-hairline">
-      <div className="max-w-lg mx-auto">
-        {/* Logo and tagline */}
-        <div className="mb-8">
-          <div className="text-h3 text-text-high mb-1">AH Travel</div>
-          <p className="text-caption text-text-low">
+    <footer className="border-t border-border-hairline px-4 py-12 sm:py-14">
+      <div className="mx-auto max-w-5xl">
+        <div className="pb-8 sm:pb-10">
+          <div className="text-[30px] font-semibold leading-none tracking-[-0.045em] text-text-high sm:text-[34px]">
+            AH Travel
+          </div>
+          <p className="mt-3 max-w-sm text-[15px] leading-6 text-text-mid">
             AI-платформа для подготовки к поездке
           </p>
         </div>
 
-        {/* Links grid */}
-        <div className="grid grid-cols-3 gap-8 mb-8">
-          <div>
-            <div className="text-caption text-text-low mb-3">Продукт</div>
-            <ul className="space-y-2">
-              {links.product.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-body text-text-mid hover:text-text-high transition-fast"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <div className="text-caption text-text-low mb-3">Компания</div>
-            <ul className="space-y-2">
-              {links.company.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-body text-text-mid hover:text-text-high transition-fast"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <div className="text-caption text-text-low mb-3">Правовое</div>
-            <ul className="space-y-2">
-              {links.legal.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-body text-text-mid hover:text-text-high transition-fast"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="grid gap-8 sm:grid-cols-3 sm:gap-10">
+          <FooterGroup title="Продукт" links={links.product} />
+          <FooterGroup title="Компания" links={links.company} />
+          <FooterGroup title="Правовое" links={links.legal} />
         </div>
 
-        {/* Copyright */}
-        <div className="pt-6 border-t border-border-hairline">
-          <p className="text-caption text-text-low text-center">
+        <div className="mt-10 border-t border-border-hairline pt-6 sm:mt-12 sm:pt-7">
+          <p className="text-center text-[13px] leading-6 text-text-low">
             © 2026 AH Travel. Все права защищены.
           </p>
         </div>
       </div>
     </footer>
+  )
+}
+
+function FooterGroup({
+  title,
+  links,
+}: {
+  title: string
+  links: { label: string; href: string }[]
+}) {
+  return (
+    <section className="border-t border-white/6 pt-4 first:border-t-0 first:pt-0 sm:border-t-0 sm:pt-0">
+      <div className="mb-3 text-[11px] font-medium uppercase tracking-[0.18em] text-text-low">
+        {title}
+      </div>
+      <ul className="space-y-3">
+        {links.map((link) => (
+          <li key={link.href + link.label}>
+            <Link
+              href={link.href}
+              className="text-[16px] leading-6 text-text-mid transition-fast hover:text-text-high"
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
