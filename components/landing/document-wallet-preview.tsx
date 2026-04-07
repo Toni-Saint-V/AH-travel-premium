@@ -1,10 +1,14 @@
 import type { ComponentType } from 'react'
 import {
+  AlertTriangle,
   BriefcaseBusiness,
   Camera,
+  Check,
+  Clock3,
   FileBadge,
   IdCard,
   Landmark,
+  X,
 } from 'lucide-react'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { documentStatusLabels, mockActiveCase, type DocumentStatus } from '@/lib/mock-data'
@@ -16,46 +20,34 @@ const documents = mockActiveCase.documents.filter((document) => previewDocumentT
 
 const statusConfig = {
   verified: {
-    summaryLabel: 'Проверено',
     badgeVariant: 'success',
     statusDotColor: 'bg-success',
     hoverGlow: 'bg-success/6',
-    summaryValueColor: 'text-success',
   },
   reviewing: {
-    summaryLabel: 'В работе',
     badgeVariant: 'info',
     statusDotColor: 'bg-accent-2',
     hoverGlow: 'bg-accent-2/6',
-    summaryValueColor: 'text-accent-2',
   },
   uploaded: {
-    summaryLabel: 'В работе',
     badgeVariant: 'info',
     statusDotColor: 'bg-accent-2',
     hoverGlow: 'bg-accent-2/6',
-    summaryValueColor: 'text-accent-2',
   },
   needs_fix: {
-    summaryLabel: 'Требуют внимания',
     badgeVariant: 'warning',
     statusDotColor: 'bg-warning',
     hoverGlow: 'bg-warning/6',
-    summaryValueColor: 'text-warning',
   },
   missing: {
-    summaryLabel: 'Требуют внимания',
     badgeVariant: 'danger',
     statusDotColor: 'bg-danger',
     hoverGlow: 'bg-danger/6',
-    summaryValueColor: 'text-danger',
   },
   expired: {
-    summaryLabel: 'Требуют внимания',
     badgeVariant: 'danger',
     statusDotColor: 'bg-danger',
     hoverGlow: 'bg-danger/6',
-    summaryValueColor: 'text-danger',
   },
 } as const
 
@@ -64,6 +56,29 @@ const documentTypeIcons: Record<string, ComponentType<{ className?: string }>> =
   photo: Camera,
   bank_statement: Landmark,
   employment: BriefcaseBusiness,
+}
+
+const statusIcons: Record<DocumentStatus, ComponentType<{ className?: string }>> = {
+  verified: Check,
+  reviewing: Clock3,
+  uploaded: Clock3,
+  needs_fix: AlertTriangle,
+  missing: X,
+  expired: X,
+}
+
+function getDocumentTitle(document: (typeof documents)[number]) {
+  if (document.type === 'photo') {
+    return {
+      primary: 'Фотография',
+      secondary: '3,5 × 4,5 см',
+    }
+  }
+
+  return {
+    primary: document.name,
+    secondary: null,
+  }
 }
 
 export function DocumentWalletPreview() {
@@ -77,9 +92,6 @@ export function DocumentWalletPreview() {
   const needsAttentionCount = documents.filter((document) =>
     document.status === 'needs_fix' || document.status === 'missing' || document.status === 'expired'
   ).length
-  const progressPercentage =
-    documents.length > 0 ? Math.round((activeCount / documents.length) * 100) : 0
-  const documentsLabel = formatRussianDocuments(documents.length)
 
   return (
     <section className="relative overflow-hidden px-4 py-14 sm:py-20">
@@ -104,60 +116,55 @@ export function DocumentWalletPreview() {
           <div className="h-px bg-[linear-gradient(90deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.14)_50%,rgba(255,255,255,0)_100%)]" />
 
           <div className="border-b border-border-hairline px-4 py-4 sm:px-7 sm:py-6">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-text-low">
-                  Готовность
-                </span>
-                <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-                  <span className="text-[34px] font-semibold leading-none tracking-[-0.045em] text-text-high sm:text-[40px]">
-                    {progressPercentage}%
-                  </span>
-                  <span className="hidden rounded-full border border-white/6 bg-white/[0.03] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-text-low sm:inline-flex">
-                    {activeCount} из {documents.length} в работе
-                  </span>
-                </div>
-              </div>
-
-              <div className="hidden pt-1 text-[11px] font-medium uppercase tracking-[0.16em] text-text-low sm:block">
-                {documentsLabel}
-              </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-[24px] font-semibold leading-none tracking-[-0.035em] text-text-high sm:text-[28px]">
+                {activeCount} из {documents.length}
+              </span>
+              <span className="text-[13px] leading-5 text-text-mid sm:text-[14px]">
+                документов загружены
+              </span>
             </div>
 
-            <div className="mt-4 rounded-full bg-black/25 p-[1px] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:mt-5">
-              <div className="h-2 rounded-full bg-bg-2">
+            <div
+              className="mt-4 grid grid-cols-4 gap-2 sm:mt-5"
+              role="img"
+              aria-label={`${activeCount} из ${documents.length} документов загружены`}
+            >
+              {documents.map((document, index) => (
                 <div
-                  className="h-full rounded-full bg-[linear-gradient(90deg,#6C63FF_0%,#2CD4FF_100%)] shadow-[0_0_18px_rgba(44,212,255,0.22)]"
-                  style={{ width: `${progressPercentage}%` }}
-                />
-              </div>
+                  key={document.name}
+                  className="h-2 overflow-hidden rounded-full bg-bg-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]"
+                  aria-hidden="true"
+                >
+                  <div
+                    className={cn(
+                      'h-full rounded-full transition-base',
+                      index < activeCount
+                        ? 'bg-[linear-gradient(90deg,#6C63FF_0%,#2CD4FF_100%)] shadow-[0_0_18px_rgba(44,212,255,0.18)]'
+                        : 'bg-transparent'
+                    )}
+                  />
+                </div>
+              ))}
             </div>
 
-            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-medium uppercase tracking-[0.14em] text-text-low sm:hidden">
-              <span>Проверено {verifiedCount}</span>
-              <span className="text-text-low/50">•</span>
-              <span>В работе {inProgressCount}</span>
-              <span className="text-text-low/50">•</span>
-              <span>Внимание {needsAttentionCount}</span>
-            </div>
-
-            <div className="mt-5 hidden overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015] sm:grid sm:grid-cols-3">
+            <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-2xl border border-white/5 bg-white/[0.015]">
               <SummaryMetric
-                label={statusConfig.verified.summaryLabel}
+                label="Проверено"
                 value={verifiedCount}
-                valueColor={statusConfig.verified.summaryValueColor}
+                valueColor="text-success"
                 className="border-r border-white/5"
               />
               <SummaryMetric
-                label={statusConfig.uploaded.summaryLabel}
+                label="В работе"
                 value={inProgressCount}
-                valueColor={statusConfig.uploaded.summaryValueColor}
+                valueColor="text-accent-2"
                 className="border-r border-white/5"
               />
               <SummaryMetric
-                label={statusConfig.needs_fix.summaryLabel}
+                label="Требуют внимания"
                 value={needsAttentionCount}
-                valueColor={statusConfig.needs_fix.summaryValueColor}
+                valueColor="text-warning"
               />
             </div>
           </div>
@@ -166,23 +173,14 @@ export function DocumentWalletPreview() {
             {documents.map((doc) => {
               const status = statusConfig[doc.status]
               const DocumentIcon = documentTypeIcons[doc.type] ?? FileBadge
-              const isNeedsFix = doc.status === 'needs_fix'
+              const StatusIcon = statusIcons[doc.status]
+              const title = getDocumentTitle(doc)
 
               return (
                 <li
                   key={doc.name}
-                  className={cn(
-                    'group relative flex items-start gap-3 px-4 py-3.5 transition-base hover:bg-white/[0.02] sm:items-center sm:px-7 sm:py-4',
-                    isNeedsFix && 'bg-warning/[0.02]'
-                  )}
+                  className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3.5 transition-base hover:bg-white/[0.02] sm:px-7 sm:py-4"
                 >
-                  {isNeedsFix && (
-                    <div
-                      aria-hidden="true"
-                      className="absolute bottom-3 left-0 top-3 w-px bg-[linear-gradient(180deg,rgba(255,181,71,0)_0%,rgba(255,181,71,0.8)_50%,rgba(255,181,71,0)_100%)]"
-                    />
-                  )}
-
                   <div
                     className={cn(
                       'relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-[18px] border sm:h-11 sm:w-11',
@@ -204,27 +202,46 @@ export function DocumentWalletPreview() {
                     />
                   </div>
 
-                  <div className="min-w-0 flex-1">
-                    <div className="min-w-0 whitespace-normal text-[15px] font-medium leading-[1.25] tracking-[-0.01em] text-text-high sm:truncate sm:pr-2 sm:text-[16px]">
-                      {doc.name}
+                  <div className="min-w-0 pr-2">
+                    <div className="flex min-w-0 items-baseline gap-1.5">
+                      <div className="truncate text-[15px] font-medium leading-[1.25] tracking-[-0.01em] text-text-high sm:text-[16px]">
+                        {title.primary}
+                      </div>
+                      {title.secondary ? (
+                        <span className="shrink-0 whitespace-nowrap text-[10px] font-medium leading-none tracking-[0.02em] text-text-low sm:text-[11px]">
+                          {title.secondary}
+                        </span>
+                      ) : null}
                     </div>
-                    <StatusBadge
-                      variant={status.badgeVariant}
-                      dot
+                  </div>
+
+                  <div
+                    className={cn(
+                      'flex h-8 w-8 items-center justify-center rounded-full border border-white/7 bg-white/[0.02] sm:hidden',
+                      doc.status === 'needs_fix' && 'border-warning/18 bg-warning/[0.07]',
+                      (doc.status === 'missing' || doc.status === 'expired') &&
+                        'border-danger/18 bg-danger/[0.07]'
+                    )}
+                    aria-label={documentStatusLabels[doc.status as DocumentStatus]}
+                  >
+                    <StatusIcon
                       className={cn(
-                        'mt-2 inline-flex rounded-full border-white/7 bg-white/[0.02] px-2.5 py-0.5 text-[10px] tracking-[0.02em] sm:hidden',
-                        isNeedsFix && 'border-warning/18 bg-warning/[0.07]'
+                        'h-4 w-4',
+                        doc.status === 'verified' && 'text-success',
+                        (doc.status === 'uploaded' || doc.status === 'reviewing') &&
+                          'text-accent-2',
+                        doc.status === 'needs_fix' && 'text-warning',
+                        (doc.status === 'missing' || doc.status === 'expired') &&
+                          'text-danger'
                       )}
-                    >
-                      {documentStatusLabels[doc.status as DocumentStatus]}
-                    </StatusBadge>
+                    />
                   </div>
 
                   <StatusBadge
                     variant={status.badgeVariant}
                     className={cn(
                       'hidden shrink-0 rounded-full border-white/7 bg-white/[0.02] px-2.5 py-0.5 text-[10px] tracking-[0.02em] sm:inline-flex',
-                      isNeedsFix && 'border-warning/18 bg-warning/[0.07]'
+                      doc.status === 'needs_fix' && 'border-warning/18 bg-warning/[0.07]'
                     )}
                   >
                     {documentStatusLabels[doc.status as DocumentStatus]}
@@ -251,24 +268,23 @@ function SummaryMetric({
   className?: string
 }) {
   return (
-    <div className={cn('px-3 py-3 sm:px-4', className)}>
-      <div className={cn('text-h3', valueColor)}>{value}</div>
-      <div className="mt-1 text-[11px] leading-[1.3] text-text-low sm:text-caption">{label}</div>
+    <div
+      className={cn(
+        'grid min-h-[74px] grid-rows-[auto_auto] place-items-center px-3 py-3 text-center sm:min-h-[88px] sm:px-4 sm:py-4',
+        className
+      )}
+    >
+      <div
+        className={cn(
+          'w-full text-center text-[22px] font-semibold leading-none tracking-[-0.03em] tabular-nums sm:text-[24px]',
+          valueColor
+        )}
+      >
+        {value}
+      </div>
+      <div className="mt-2 min-h-[28px] max-w-[94px] text-center text-[11px] leading-[1.15] text-text-low sm:min-h-[30px] sm:max-w-[110px] sm:text-[12px]">
+        {label}
+      </div>
     </div>
   )
-}
-
-function formatRussianDocuments(count: number) {
-  const mod10 = count % 10
-  const mod100 = count % 100
-
-  if (mod10 === 1 && mod100 !== 11) {
-    return `${count} документ`
-  }
-
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) {
-    return `${count} документа`
-  }
-
-  return `${count} документов`
 }

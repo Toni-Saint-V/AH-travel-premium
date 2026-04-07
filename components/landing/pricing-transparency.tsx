@@ -20,19 +20,15 @@ function SectionHeader({
   icon: Icon,
   title,
   accent = false,
-  framed = false,
 }: {
   icon: LucideIcon
   title: string
   accent?: boolean
-  framed?: boolean
 }) {
   return (
     <div
       className={cn(
-        'flex w-full items-center justify-start gap-3.5',
-        framed &&
-          'rounded-[20px] border-[1.5px] border-white/8 bg-white/[0.02] pl-0 pr-3.5 py-3'
+        'flex w-full items-center justify-start gap-3.5'
       )}
     >
       <div
@@ -48,10 +44,7 @@ function SectionHeader({
 
       <h3
         className={cn(
-          'min-w-0 font-semibold tracking-[-0.02em] text-text-high',
-          framed
-            ? 'whitespace-nowrap text-[15px] leading-none sm:text-[17px]'
-            : 'flex-1 text-[17px] leading-[1.18] sm:text-[20px]'
+          'min-w-0 flex-1 font-semibold tracking-[-0.02em] text-text-high text-[17px] leading-[1.18] sm:text-[20px]'
         )}
       >
         {title}
@@ -92,10 +85,10 @@ export function PricingTransparency() {
   return (
     <section id="pricing" className="scroll-mt-16 px-4 py-16 surface-1 sm:py-20">
       <div className="mx-auto max-w-2xl">
-        <div className="mb-8 text-center sm:mb-10">
-          <h2 className="text-h2 text-text-high">Прозрачное ценообразование</h2>
-          <p className="mx-auto mt-3 max-w-md text-body text-text-mid">
-            Всегда три отдельных слоя: наш сервис, внешние сборы, опции
+        <div className="mb-8 px-16 text-center sm:mb-10 sm:px-0">
+          <h2 className="text-h2 text-text-high [text-wrap:balance]">Прозрачное ценообразование</h2>
+          <p className="mx-auto mt-3 max-w-[22rem] text-body text-text-mid [text-wrap:balance] sm:max-w-md">
+            Три слоя: наш сервис, <span className="whitespace-nowrap">внешние сборы</span> и опции
           </p>
         </div>
 
@@ -116,10 +109,10 @@ export function PricingTransparency() {
                     от
                   </span>
                   <span className="inline-flex items-end gap-1.5">
-                    <span className="text-[24px] font-semibold leading-none tracking-[-0.03em] sm:text-[28px]">
+                    <span className="text-[22px] font-semibold leading-none tracking-[-0.03em] sm:text-[25px]">
                       4 900
                     </span>
-                    <span className="pb-0.5 text-[17px] font-medium leading-none tracking-[-0.01em] text-text-mid sm:text-[19px]">
+                    <span className="pb-0.5 text-[15px] font-medium leading-none tracking-[-0.01em] text-text-mid sm:text-[17px]">
                       ₽
                     </span>
                   </span>
@@ -129,12 +122,12 @@ export function PricingTransparency() {
           </div>
 
           <div className="px-5 py-5 sm:px-6 sm:py-6">
-            <SectionHeader icon={Building2} title="Обязательные внешние сборы" framed />
+            <SectionHeader icon={Building2} title="Обязательные внешние сборы" />
             <PricingRows rows={mandatoryFees} />
           </div>
 
           <div className="border-t border-white/6 px-5 py-5 sm:px-6 sm:py-6">
-            <SectionHeader icon={Plus} title="Дополнительно" framed />
+            <SectionHeader icon={Plus} title="Дополнительно" />
             <PricingRows rows={addOns} mutedAmounts />
           </div>
 
@@ -148,10 +141,10 @@ export function PricingTransparency() {
                   от
                 </span>
                 <span className="inline-flex items-end gap-1.5">
-                  <span className="text-[25px] font-semibold leading-none tracking-[-0.03em] sm:text-[30px]">
+                  <span className="text-[23px] font-semibold leading-none tracking-[-0.03em] sm:text-[27px]">
                     15 400
                   </span>
-                  <span className="pb-0.5 text-[18px] font-medium leading-none tracking-[-0.01em] text-text-mid sm:text-[20px]">
+                  <span className="pb-0.5 text-[15px] font-medium leading-none tracking-[-0.01em] text-text-mid sm:text-[17px]">
                     ₽
                   </span>
                 </span>
